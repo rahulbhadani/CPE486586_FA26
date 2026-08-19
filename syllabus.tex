@@ -1,0 +1,422 @@
+% ==========================================================================
+% CPE 486/586 Syllabus. Alternative book design.
+% Full page width, Palatino text, two color palette.
+%   accent  #B86B9D  (mauve rose)
+%   deep    #2E0014  (dark maroon, reads as near black)
+% Self contained. Does not require the tufte-book class or the mycolors package.
+% Compile with pdflatex (run twice for the table of contents).
+% ==========================================================================
+\documentclass[11pt,oneside,openany]{book}
+
+% ---- Fonts. Palatino via mathpazo, with genuine small caps. ----
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[sc]{mathpazo}
+\usepackage{microtype}
+\linespread{1.05}
+
+% ---- Colour palette ----
+\usepackage[table]{xcolor}
+\definecolor{accent}{HTML}{B86B9D}   % mauve rose
+\definecolor{deep}{HTML}{611A1F}     % dark maroon
+\colorlet{rowtint}{accent!12}        % soft band for table rows
+\colorlet{rulesoft}{accent!55}       % soft rule for the header line
+
+% ---- Geometry. Full page width single column. ----
+\usepackage[letterpaper,top=1in,bottom=1in,left=1.05in,right=1.05in,%
+            headheight=15pt,headsep=16pt,footskip=26pt]{geometry}
+
+% ---- Supporting packages ----
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{xltabular}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{ragged2e}
+\usepackage{needspace}
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage{fancyhdr}
+\usepackage{afterpage}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=deep,
+    urlcolor=accent,
+    citecolor=accent,
+    filecolor=accent,
+    breaklinks=true,
+    bookmarksnumbered=true,
+    pdftitle={CPE 486/586 Machine Learning for Computer Engineers, Syllabus},
+    pdfauthor={Rahul Bhadani}
+}
+\usepackage{xurl}   % allow long URLs to break at any character
+
+% ---- Small helpers ----
+% Letterspaced small caps, used for the running head and section labels.
+\newcommand{\lsc}[1]{\textls[110]{\scshape #1}}
+% A small accent square used as a marker before every section heading.
+\newcommand{\accbox}{\textcolor{accent}{\rule[0.02em]{0.52em}{0.52em}}}
+% Semantic colours for the reference list and topic list.
+\newcommand{\btitle}[1]{\textit{\textcolor{deep}{#1}}}   % book title
+\newcommand{\bpub}[1]{\textcolor{accent}{#1}}            % publisher
+\newcommand{\topiclead}[1]{\textbf{\textcolor{deep}{#1}}}% topic lead in
+% Compatibility with a couple of macro names carried over from the source.
+\providecommand{\smallcaps}[1]{\textsc{#1}}
+\providecommand{\allcaps}[1]{\MakeUppercase{#1}}
+
+% ---- Chapter headings. Number label above, thick accent rule below. ----
+\titleformat{\chapter}[display]
+    {\normalfont\color{deep}}
+    {\raggedright\normalsize\color{accent}\lsc{\chaptertitlename\ \thechapter}}
+    {6pt}
+    {\raggedright\fontsize{28}{32}\selectfont\bfseries}
+    [\vspace{6pt}{\color{accent}\titlerule[2.4pt]}]
+\titlespacing*{\chapter}{0pt}{6pt}{22pt}
+
+% ---- Section and subsection headings ----
+\titleformat{\section}
+    {\normalfont\Large\bfseries\color{deep}}
+    {\color{accent}\thesection}{0.6em}
+    {\accbox\hspace{0.5em}}
+\titlespacing*{\section}{0pt}{15pt}{5pt}
+
+\titleformat{\subsection}
+    {\normalfont\large\bfseries\color{deep!88}}
+    {\color{accent}\thesubsection}{0.5em}{}
+\titlespacing*{\subsection}{0pt}{11pt}{4pt}
+
+% ---- Table of contents styling (chapter level only) ----
+\setcounter{tocdepth}{0}
+\titlecontents{chapter}[0pt]
+    {\addvspace{0.7em}\bfseries\color{deep}}
+    {\contentslabel[\thecontentslabel]{1.9em}}
+    {}
+    {\hfill\color{accent}\contentspage}
+
+% ---- Running head and footer ----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{deep}\lsc{\leftmark}}
+\fancyhead[R]{\footnotesize\color{accent}\lsc{CPE 486/586}}
+\fancyfoot[C]{\normalfont\color{accent}\bfseries\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrule}{\color{rulesoft}\hrule height 0.7pt\vspace{2pt}}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\fancypagestyle{plain}{%
+    \fancyhf{}%
+    \renewcommand{\headrulewidth}{0pt}%
+    \renewcommand{\headrule}{}%
+    \fancyfoot[C]{\normalfont\color{accent}\bfseries\thepage}%
+}
+
+% ---- Lists. Accent coloured markers. ----
+\renewcommand{\labelitemi}{\textcolor{accent}{\textbullet}}
+\renewcommand{\labelitemii}{\textcolor{accent}{\bfseries\textendash}}
+\setlist[itemize]{leftmargin=1.6em,itemsep=0.35em,topsep=0.4em}
+\setlist[enumerate]{leftmargin=1.9em,itemsep=0.35em,topsep=0.4em}
+
+% ---- A themed callout box, used for the high priority notices. ----
+\newtcolorbox{notebox}[1][]{
+    enhanced, breakable,
+    colback=accent!7, colframe=deep,
+    boxrule=0.6pt, arc=2pt,
+    left=10pt, right=10pt, top=8pt, bottom=8pt,
+    coltitle=white, colbacktitle=deep,
+    fonttitle=\bfseries,
+    title={#1}
+}
+
+% Classic manuscript look. Indented first lines, little space between paragraphs.
+
+\setlength{\parindent}{0pt}
+
+\setlength{\parskip}{10pt}
+
+\raggedbottom
+
+\begin{document}
+
+\frontmatter
+
+% ==========================================================================
+% COVER. Dark ground with maure and white type.
+% ==========================================================================
+\begin{titlepage}
+\thispagestyle{empty}
+\raggedright
+{\color{accent}\rule{\linewidth}{2.2pt}}\par
+\vspace{2.2em}
+{\color{accent}\Large\lsc{Rahul Bhadani}\par}
+\vspace{5.5em}
+{\color{deep}\fontsize{40}{44}\selectfont\bfseries CPE 486/586\par}
+\vspace{0.5em}
+{\color{deep}\fontsize{26}{30}\selectfont Machine Learning for Computer Engineers\par}
+\vspace{0.9em}
+{\color{accent}\rule{0.34\linewidth}{1.1pt}}\par
+\vspace{1.7em}
+{\color{accent}\fontsize{24}{26}\selectfont\lsc{Syllabus}\par}
+\vspace{2.2em}
+{\color{deep}\large\lsc{Fall 2026}\par}
+\vspace{0.5em}
+{\large Mon and Wed, 4:20 PM to 5:40 PM\par}
+\vspace{0.25em}
+{\large Location: ENG 239\par}
+\vspace{1.4em}
+{\normalsize\url{https://uah.instructure.com/courses/88723
+
+}\par}
+\vfill
+{\color{deep}\itshape Department of Electrical and Computer Engineering,\\
+The University of Alabama in Huntsville\par}
+\vspace{1.1em}
+{\color{accent}\rule{\linewidth}{2.2pt}}
+\end{titlepage}
+
+% ==========================================================================
+% CONTENTS
+% ==========================================================================
+\tableofcontents
+
+% ==========================================================================
+% FRONT MATTER NOTICES
+% ==========================================================================
+\chapter*{Course Information}
+\markboth{Course Information}{}
+
+\section*{Subject to Change}
+Every effort is made to follow the guidelines in the syllabus. If needed, the syllabus will be amended. You will be notified if changes are made.
+
+\section*{Technology Statement}
+This course will use UAH's learning management system, Canvas, as well as other technology tools. Students will be expected to have access to a computer with internet capabilities in order to fully participate in this course.
+
+\section*{Copyright Rahul Bhadani, 2026}
+I reserve all federal and state copyrights in my lectures and course materials. You are authorized to take notes in class for your personal use and no other purpose. You are not authorized to record my lectures to make any commercial use of them or to provide them to anyone else other than students currently enrolled in this course, without my prior written permission. In addition to legal sanctions for violations of copyright law, students found in violation of these prohibitions may be subject to University disciplinary action under the Code of Student Conduct.
+
+\section*{Important Dates}
+\href{https://www.uah.edu/registrar/calendars}{Review the semester dates and deadlines and the academic calendar}: \url{https://www.uah.edu/registrar/calendars}.
+
+\vspace{10pt}
+
+{\renewcommand{\arraystretch}{1.35}\arrayrulecolor{rulesoft}%
+\rowcolors{2}{white}{rowtint}%
+\noindent\begin{tabularx}{\textwidth}{@{}>{\bfseries}p{3.4cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X@{}}
+\rowcolor{deep}\textcolor{white}{Exam} & \textcolor{white}{\bfseries Date} & \textcolor{white}{\bfseries Time}\\
+Mid-Term 1 & Wednesday, September 30, 2026 & 4:20 PM to 5:40 PM\\
+Mid-Term 2 & Wednesday, November 4, 2026 & 4:20 PM to 5:40 PM\\
+Final Exam & Friday, December 11, 2026 & 3:00 PM to 5:30 PM\\
+\end{tabularx}\arrayrulecolor{black}}
+
+\mainmatter
+
+% ==========================================================================
+\chapter{Textbook}
+
+{\renewcommand{\arraystretch}{1.3}%
+\noindent\begin{tabularx}{\textwidth}{@{}>{\bfseries\color{deep}}p{2.6cm} X@{}}
+Reference(s) &
+\btitle{Mathematics for Machine Learning}. Marc Peter Deisenroth, A. Aldo Faisal, Cheng Soon Ong. \bpub{Cambridge University Press}. ISBN: 9781108569323, 1108569323.\par\vspace{6pt}
+\btitle{Python for Probability, Statistics, and Machine Learning}. Jos\'e Unpingco. \bpub{Springer, 3rd Edition, 2022}. ISBN-10: 3031046471, ISBN-13: 978-3031046476.\par\vspace{6pt}
+\btitle{Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow}. Aur\'elien G\'eron. \bpub{O'Reilly Media, 2nd Edition, 2019}. ISBN-10: 1492032646, ISBN-13: 978-1492032649.\\
+\end{tabularx}}
+
+% ==========================================================================
+\chapter{Course Description}
+The course introduces fundamental concepts of machine learning and data science with applications to engineering problems. Machine learning deals with the automated classification, identification, and/or characterization of an unknown system and its parameters. There are an overwhelming number of application-driven fields that can benefit from machine learning techniques. For example, machine learning can be used to design and optimize wind turbines, secure and authenticate wireless communications, interface with and control robotic systems, analyze and predict weather patterns, and monitor and diagnose mechanical faults. This course will introduce you to the fundamentals of machine learning and develop core principles that allow you to determine which algorithm to use or design a novel approach to solving the engineering task at hand. This course will also utilize software technology to supplement the theoretical concepts learned in class with practical applications using real-world data.
+
+\section*{Objectives}
+\begin{itemize}
+    \item Apply fundamental concepts of probability, statistics, and machine learning using Python.
+    \item Use machine learning libraries such as Scikit-Learn, and PyTorch, for building and evaluating models for accuracy, precision, and recall.
+    \item Implement and analyze machine learning algorithms for classification, regression, clustering, and dimensionality reduction by coding them from scratch and using popular Python libraries such as sci-kit-learn and PyTorch.
+    \item \textit{\textbf{Only for CPE 586.}} Apply and adapt existing machine learning methods to solve complex engineering problems, with a measurable performance improvement (for example, a 10\% increase in accuracy or F1-score).
+\end{itemize}
+
+\section*{Academic Topics}
+The set of topics and areas covered by this course, and upon which you may be tested, includes:
+
+\begin{itemize}
+    \item \topiclead{Course Introduction, Mathematical Preliminaries:} Linear Algebra, Probability and Statistics.
+    \item \topiclead{Tools for Machine Learning:} Installing Python, Unix Terminal, SSH, Git, Jupyter Notebook, Markdown, Latex, Package Manager.
+    \item \topiclead{Scientific Python:} Numpy, Scikit-learn, IPython and Jupyter Notebook, Matplotlib, Pandas, Matrix Algebra with Python, Root-finding using Newton Raphson Method, Probability and Statistics with Python, PyTorch for Linear Algebra.
+    \item \topiclead{Optimization and Gradient Descent:} Continuous Optimization, Optimization Using Gradient Descent, Univariate Optimization, Multivariate Optimization, Constrained Optimization and Lagrange Multipliers, Convex Optimization, Methods of Least Square, Implementation in Pandas, Scipy and Pytorch.
+    \item \topiclead{Supervised Learning (Regression):} Simple Linear Regression, Variance Estimation, Goodness of Fit, Confidence-band, Matrix approach to Regression, Multiple Linear Regression, Polynomial Regression, Locally Weighted Regression, Kernel Methods for Regression, Implementation in Scipy and PyTorch.
+    \item \topiclead{Supervised Learning (Logistic Regression):} Classification Problem, Logistics Function, Model Assessment.
+    \item \topiclead{Overfitting and Regularization:} Overfitting, Underfitting, Bias-Variance Tradeoff, Regularization, Ridge-Regression, LASSO, Elastic-Net.
+    \item \topiclead{Dimensionality Reduction and Feature Selections:} Maximum Variance Perspective, Projection Perspective, Eigenvector Computation and Low-Rank Approximations, Principal Component Analysis, Latent Variable Perspective, Feature Selection, Data Transforms, Implementation using Scikit-learn, Pandas, and Pytorch.
+    \item \topiclead{Supervised Learning (Support Vector Machine, SVM):} Linear Classifier, Concept of Hyperplane, Hard Margin SVM, Soft-Margin SVM, Kernel-based SVM, Implementation using Scipy.
+    \item \topiclead{Unsupervised Learning (Classification):} Clustering techniques, K-means, Hierarchical Clustering, Agglomerative Clustering, DBSCAN, Graph-based Clustering, Expectation Maximization Algorithms, Gaussian Mixture Model, Evaluating Cluster Qualities, Implementation using Scipy.
+    \item \topiclead{Introducing Deep Learning (Neural Networks):} Perceptron, Multi-layer Perceptron, Nonlinear Activation Functions, Backpropagation Algorithms, Vectorization and Batch Techniques, Neural Network Layers, Training Neural Networks, Learning Rates and Optimization Techniques in Neural Network, Implementation using PyTorch.
+\end{itemize}
+
+\section*{Tentative Weekly Schedule\footnote{Subject to change.}}
+
+{\renewcommand{\arraystretch}{1.35}\arrayrulecolor{rulesoft}%
+\rowcolors{2}{white}{rowtint}%
+\begin{xltabular}{\textwidth}{@{}>{\centering\arraybackslash\bfseries}p{1.8cm} X@{}}
+\rowcolor{deep}\textcolor{white}{Week} & \textcolor{white}{\bfseries Topics}\\
+\endfirsthead
+\rowcolor{deep}\textcolor{white}{Week} & \textcolor{white}{\bfseries Topics}\\
+\endhead
+1 & Course Introduction, Mathematical Preliminaries, Tools for Machine Learning\\
+2 & Scientific Python\\
+3 & Optimization and Gradient Descent (Part 1)\\
+4 & Optimization and Gradient Descent (Part 2)\\
+5 & Statistical Computing\\
+\rowcolor{accent!32} 6 & \textbf{Midterm 1}\\
+7 & Supervised Learning, Regression (Part 1)\\
+8 & Supervised Learning, Regression (Part 2)\\
+9 & Supervised Learning, Logistic Regression\\
+10 & Overfitting and Regularization\\
+11 & Dimensionality Reduction and Feature Selection\\
+\rowcolor{accent!32} 12 & \textbf{Midterm 2}\\
+13 & Supervised Learning, SVM\\
+14 & Unsupervised Learning, Classification\\
+\rowcolor{accent!32} 15 & \textbf{Thanksgiving Break}\\
+16 & Introducing Deep Learning, Neural Networks\\
+\rowcolor{accent!32} 17 & \textbf{Final Exam}\\
+\end{xltabular}\arrayrulecolor{black}}
+
+\section*{Summary of your responsibilities as an active participant in this course}
+Commit to taking part in every single class meeting. Commit to being engaged by switching off your mobile devices. Commit to learning the material in advance by performing the reading assignments without distraction. Commit to starting your homework and quizzes early by reading the homework descriptions before you start working on the code. Commit to helping everyone in the class by actively engaging in all the in-class exercises, even if you don't understand the topic, and even if you understand the topic better than everyone, including the instructors.
+
+Commit to being an engaged member of this class, and your reward will be a deeper understanding of your own abilities and a deeper appreciation of how you can succeed in your career through committing to doing better.
+
+% ==========================================================================
+\chapter{Submission and Grading Policy}
+
+\section*{Grading}
+As your instructor, I do not \textit{give} grades. I assign the grade that you earn, based on your individual performance. You will not be competing with other students for your grade for all assignments in this course. Your grade is solely based on the points you earn, in the below-weighted categories.
+
+\vspace{8pt}
+{\renewcommand{\arraystretch}{1.3}\arrayrulecolor{rulesoft}%
+\rowcolors{2}{white}{rowtint}%
+\noindent\begin{tabularx}{\textwidth}{@{}X >{\raggedleft\arraybackslash}p{2.6cm}@{}}
+\rowcolor{deep}\textcolor{white}{\bfseries Component, CPE 486} & \textcolor{white}{\bfseries Weight}\\
+Homework & 25\%\\
+Quizzes & 5\%\\
+Attendance & 1\%\\
+Classwork & 9\%\\
+Mid-term Exam 1 & 15\%\\
+Mid-term Exam 2 & 15\%\\
+Final Exam & 30\%\\
+\end{tabularx}\arrayrulecolor{black}}
+
+\vspace{10pt}
+{\renewcommand{\arraystretch}{1.3}\arrayrulecolor{rulesoft}%
+\rowcolors{2}{white}{rowtint}%
+\noindent\begin{tabularx}{\textwidth}{@{}X >{\raggedleft\arraybackslash}p{2.6cm}@{}}
+\rowcolor{deep}\textcolor{white}{\bfseries Component, CPE 586} & \textcolor{white}{\bfseries Weight}\\
+Homework & 20\%\\
+Quizzes & 5\%\\
+Attendance & 1\%\\
+Classwork & 9\%\\
+Mid-term Exam 1 & 15\%\\
+Mid-term Exam 2 & 15\%\\
+Final Exam & 30\%\\
+Project Report & 5\%\\
+\end{tabularx}\arrayrulecolor{black}}
+
+\vspace{12pt}
+{\renewcommand{\arraystretch}{1.3}\arrayrulecolor{rulesoft}%
+\rowcolors{2}{white}{rowtint}%
+\noindent\begin{tabularx}{\textwidth}{@{}X >{\raggedleft\arraybackslash}p{3cm}@{}}
+\rowcolor{deep}\textcolor{white}{\bfseries Percentage} & \textcolor{white}{\bfseries Grade}\\
+90\% to 100\% & A\\
+75\% to 89\% & B\\
+60\% to 74\% & C\\
+45\% to 59\% & D\\
+0\% to 44\% & F\\
+\end{tabularx}\arrayrulecolor{black}}
+
+\vspace{6pt}
+The percent score will be rounded to the nearest integer before assigning the final grade.
+
+\section*{Homework Submission Policy}
+You must submit all of the code, data, and PDF files in a zip folder (that is, not rar, 7z, and so on) on Canvas. If the submission requires only a single file, it doesn't need to be zipped. Assignments must be submitted as a zip file with code and a PDF document with your solutions. You must include a single PDF file (not doc, docx, or multiple JPEG figures of the pages from your homework) with the solutions. Failure to follow any or all of these policies leaves the instructor the option not to grade the homework based on a failure to follow the homework submission policy. Your zip and pdf should be named as follows, \texttt{CPE486586-LastFirst-HW-XX.zip} and \texttt{CPE486586-LastFirst-HW-X.pdf}, where Last is your last name as it appears on Canvas, First is your first name as it appears on Canvas, and X is the homework number. Example: \texttt{CPE486586-TaylorSam-HW-01.zip}.
+
+\section*{Missed Assignments, Make-Ups, Extra Credit}
+Homework assignments that will be submitted after the due date will receive a penalty of 10\% for each day, for a maximum of 5 days, after which no submission will be entertained. Solution to homework will be posted 5 days after the due date. Students are expected to start working on their assignments as soon as it is posted. Homework solutions will be posted within one week of their due date. There will not be extra credit assignments. Individual homework may have bonus questions constituting not more than 10\% of the individual assignment.
+
+% ==========================================================================
+\chapter{Attendance Policy}
+All students are expected to arrive on time and attend lectures. If there are extenuating circumstances, please email the instructor. If you are absent, you are responsible for learning the material covered in class. If you are absent when an assignment is due, you must have submitted the assignment before the due date to receive credit. Please contact your instructor if you have specific questions or concerns.
+
+\section*{Attendance, Participation, and Quizzes}
+Attendance is mandatory. You are permitted a maximum of \textbf{two unexcused absences}. A daily roll will be taken. Pop quizzes or class handouts may be distributed without notice. These \emph{cannot} be made up. All in-class exercises serve as objective measures of participation and attendance. These activities \emph{cannot} be made up. Anticipated absences for valid reasons (for example, conference travel) \emph{must be cleared in advance} to avoid a participation penalty.
+
+% ==========================================================================
+\chapter{Academic Integrity}
+Students are expected to do all work by themselves, except when specified by the instructor in writing. All exceptions will be plainly marked in the requirements for that exercise or project. Any violations of this policy will be dealt with to the full extent permitted by the University of Alabama in Huntsville, and \emph{may result in suspension or expulsion from the university, in addition to a failing grade}. Please familiarize yourself with the Code of Academic Integrity if you have any questions.
+
+\section*{Class Disruptions}
+Please silence your cell phone, and do not use it during the class. The use of a phone in class will adversely affect your attendance grade\footnote{Uh, um, unless you are programming it as part of an in-class exercise. But please, no talking or texting. Unless, uh, that is part of the class exercise too.}.
+
+% ==========================================================================
+\chapter{Communication and Instructional Continuity}
+In this class, the official mode of communication is through email or Canvas. During the week, students can expect a response from the instructor within a 24 to 48 hour timeframe. Messages sent during the weekend may not be answered until the following week. On occasion, response times may vary due to domestic and international travel for conferences or meetings.
+
+In the event a regularly scheduled course is unexpectedly interrupted, course requirements, due dates, and grading policy are subject to change when necessitated by revised course delivery, semester calendar, or other instances. Information about changes in this course can be obtained from the Canvas course webpage or by contacting me. If, under these circumstances, I do not respond within 72 hours, please contact my department at \href{mailto:ece@uah.edu}{ece@uah.edu}.
+
+If our regular scheduled class meeting is interrupted or the campus should unexpectedly close, students should immediately log onto Canvas and read any course announcements. Students are encouraged to continue the readings and other assignments as outlined on the course syllabus until otherwise advised. Any student who does not study could fall behind in the course.
+
+% ==========================================================================
+\chapter{Course Conduct}
+All students must treat others with civility and respect and conduct themselves in a way that does not unreasonably interfere with the opportunity of other students to learn. All communication between student and instructor and between student and student should be respectful and professional.
+
+% ==========================================================================
+\chapter{Academic Honesty}
+Your written assignments and examinations must be your own work. Academic misconduct will not be tolerated. Examples of unacceptable behavior include plagiarism, use of prior work, use of Chegg and other online problem-solving sites, and the like. To ensure that you are aware of what academic misconduct is considered, you should carefully review the definitions and examples provided in the \href{https://www.uah.edu/dos/office-of-student-ethics-education/handbook}{Student Handbook}. If you have questions in this regard, please contact me without delay.
+
+% ==========================================================================
+\chapter{Course Artificial Intelligence (AI) Policy}
+You are allowed to use a generative model-based AI tool for your assignment. However, you must submit an accompanying reflection report on how you used the AI tool, what the query was for the tool, and how it improved your understanding of the subject. You must also add your thoughts on how you would tackle the assignment if there were no such tool available. Failure to provide a reflection report for every single assignment where an AI tool was used may result in a penalty, and subsequent actions will be taken in line with the plagiarism policy.
+
+% ==========================================================================
+\chapter{Safety Instructions}
+The frequent operation of a computer, such as will be required in this course, may have long-term disabling effects if you do not appropriately consider your ergonomic interaction with the computer, desk, chair, and light sources. Poorly designed workstations and practices can lead to musculoskeletal disorders and may result in chronic pain, inability to sleep, or expensive surgery decades from today. The habits you form in your university years may well impact your future performance, and it is highly recommended that you consult with the office of risk management and compliance \href{https://www.uah.edu/rmi}{https://www.uah.edu/rmi}.
+
+% ==========================================================================
+\chapter{Disability Statement}
+The University of Alabama in Huntsville will make reasonable accommodations for students with documented disabilities. If you need support or assistance due to a disability, you may be eligible for academic accommodations. \href{https://kea.accessiblelearning.com/s-UAH/ApplicationStudent.aspx}{Apply here} (\url{https://kea.accessiblelearning.com/s-UAH/ApplicationStudent.aspx}) or contact \href{https://www.uah.edu/dss}{Disability Support Services} (\url{https://www.uah.edu/dss}) (256.824.1997 or Wilson Hall 128) as soon as possible to coordinate accommodations.
+
+% ==========================================================================
+\chapter{Mental Health Statement}
+As a student, you may experience a range of issues that can cause barriers to learning, such as strained relationships, increased anxiety, alcohol or drug problems, feeling down, difficulty concentrating, and lack of motivation. These mental health concerns or stressful events may lead to diminished academic performance or reduce a student's ability to participate in daily activities.
+
+The University of Alabama in Huntsville offers services to assist you with addressing these and other concerns you may be experiencing. If you or someone you know are suffering from any of the aforementioned conditions, you can learn more about the broad range of confidential mental health services available on campus via the \href{https://www.uah.edu/dos}{Department of Student Affairs} located under the Health and Wellness or the \href{https://www.uah.edu/counseling-center}{UAH Counseling Center} by calling 256.824.6203.
+
+\begin{notebox}[Emergency help is available around the clock]
+24-hour emergency help is available through the 24/7 National Suicide Prevention Hotline at 1.800.273.TALK or at \href{https://suicidepreventionlifeline.org/}{suicidepreventionlifeline.org}. A student who lives on-campus can reach out to the UAH PD dispatch to contact an on-call counselor by calling 256.824.6596. If you find yourself in a mental health emergency, call 6911 on campus or 911 off-campus.
+\end{notebox}
+
+% ==========================================================================
+\chapter{Pertinent UAH Policies and Guidelines}
+\begin{itemize}
+    \item UAH Student Handbook: \url{https://www.uah.edu/dos/office-of-student-ethics-education/handbook}
+    \item Academic Misconduct Policy: \url{https://www.uah.edu/policies/02-01-67-academic-misconduct-policy}
+    \item Complete listing of UAH Policies and Procedures: \url{https://www.uah.edu/policies}
+    \item AI and the Classroom: \url{https://www.uah.edu/etl/training-resources/faculty-and-staff?view=article&id=17868:ai-and-the-classroom&catid=919:enhanced-teaching-and-learning}
+\end{itemize}
+
+% ==========================================================================
+\chapter{Campus Resources}
+\label{ch:campus Resources}
+The University of Alabama in Huntsville offers a range of student services to enhance the experience of students.
+\begin{itemize}
+    \item \href{https://www.uah.edu/ssc}{Academic Support Services}: ASAP, Student Success Center, Tutoring, PASS, Academic Support Centers by College: \url{https://www.uah.edu/ssc}
+    \item \href{https://www.uah.edu/ualert}{UAlert}: Sign up for UAH's emergency notification system to receive urgent messages from the university: \url{https://www.uah.edu/ualert}
+    \item \href{https://www.uah.edu/registrar}{Registrar's Office}: Academic Calendars, Course Registration, Student Records, Commencement: \url{https://www.uah.edu/registrar}
+    \item \href{https://www.uah.edu/library}{M. Louis Salmon Library}: Printed and Online Resources, Reference Services, Group Study Rooms, AV Resources, Printing: \url{https://www.uah.edu/library}
+    \item \href{https://community.canvaslms.com/t5/Student-Guide/How-do-I-get-help-with-Canvas-as-a-student/ta-p/498}{Canvas Support}: Call 844-219-5802 to report an issue with Canvas: \url{https://community.canvaslms.com/t5/Student-Guide/How-do-I-get-help-with-Canvas-as-a-student/ta-p/498}
+    \item \href{https://www.uah.edu/oit/contact}{OIT Help Desk}: For technical support, contact the OIT Help Desk (\href{mailto:helpdesk@uah.edu}{helpdesk@uah.edu}; 256.824.3333): \url{https://www.uah.edu/oit/contact}
+\end{itemize}
+
+\vspace{6pt}
+NOTE: When submitting a support ticket, include your name, your class, the element or assignment being affected, and a detailed description of the issue. Providing a screenshot is often very helpful in diagnosing an issue.
+
+\end{document}
