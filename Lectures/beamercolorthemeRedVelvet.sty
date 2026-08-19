@@ -1,0 +1,128 @@
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage{multimedia}
+
+% ==========================================================================
+% PROFESSIONAL NAVY & AMBER PALETTE
+% ==========================================================================
+
+% --- Core palette ---
+\definecolor{crimson}{HTML}{B8432F}              % Refined terracotta red
+\definecolor{pinkLace}{HTML}{F5E6D8}             % Warm cream
+\definecolor{blizzardblue}{rgb}{0.67, 0.9, 0.93}
+\definecolor{bubblegumPink}{HTML}{F2C4A5}        % Warm peach
+
+% --- Invisible (very light background) tones: cool blue-grays ---
+\definecolor{InvisibleGreen}{rgb}{0.93, 0.95, 0.98}  % Lightest blue-gray
+\definecolor{InvisibleBlue}{rgb}{0.93, 0.95, 0.98}   % Light blue-gray
+\definecolor{InvisibleRed}{rgb}{0.97, 0.95, 0.92}    % Warm cream tint
+
+% --- Medium (box title bar) colors ---
+\definecolor{MediumGreen}{rgb}{0.28, 0.52, 0.76}     % Steel blue
+\definecolor{MediumBlue}{rgb}{0.28, 0.52, 0.76}      % Steel blue (matches MediumGreen)
+\definecolor{MediumRed}{rgb}{0.80, 0.43, 0.26}       % Warm copper
+
+% --- Dark (deep accent) colors ---
+\definecolor{DarkRed}{rgb}{0.18, 0.32, 0.55}         % Deep navy blue
+\definecolor{DarkGreen}{rgb}{0.15, 0.28, 0.48}       % Darker navy
+
+% --- Theme accent colors ---
+\definecolor{forestGreen}{HTML}{2C3E6B}               % Primary navy
+\definecolor{coolGray}{HTML}{5D6D7E}                  % Cool slate gray
+\definecolor{limeGreen}{HTML}{5B8DBE}                 % Medium blue
+\definecolor{softMint}{HTML}{E1E8F0}                  % Soft blue-gray
+\definecolor{deepBlue}{HTML}{1B2A4A}                  % Deepest navy
+\definecolor{pineGreen}{HTML}{243460}                 % Dark navy
+
+% --- Green family redefined as blue/teal family ---
+\definecolor{emeraldGreen}{HTML}{4A90C4}              % Medium blue
+\definecolor{darkForest}{HTML}{1A2744}                % Very dark navy
+\definecolor{mintGreen}{HTML}{D6E4F0}                 % Pale blue
+\definecolor{limeLight}{HTML}{5B8DBE}                 % Blue
+\definecolor{darkEmerald}{HTML}{2E5A88}               % Dark blue
+\definecolor{hunterGreen}{HTML}{1E3258}               % Deep blue
+\definecolor{sageGreen}{HTML}{4A6FA5}                 % Muted blue
+\definecolor{brightGreen}{HTML}{4A90C4}               % Medium blue
+\definecolor{neonGreen}{HTML}{5B8DBE}                 % Blue
+\definecolor{mossGreen}{HTML}{2C4A6E}                 % Dark steel
+\definecolor{springGreen}{HTML}{5B8DBE}               % Blue
+
+% --- Yellow/Blue accent colors ---
+\definecolor{cashyellow}{HTML}{D4943A}                % Amber gold
+\definecolor{cashblue}{HTML}{3A7BBF}                  % Bright blue
+\definecolor{cpeyellow}{HTML}{F5F0E8}                 % Warm cream
+\definecolor{mintCream}{HTML}{E8EDF5}                 % Very soft blue
+\definecolor{cpegreen}{HTML}{EDF1F7}                  % Very pale blue
+\definecolor{cpelime}{HTML}{E8E4F0}                   % Soft lavender
+\definecolor{lavenderblue}{HTML}{B0C4DE}              % Light steel blue
+
+% --- Light green family redefined as light blue family ---
+\definecolor{lightGreen}{HTML}{DAE5F2}                % Pale blue
+\definecolor{pastelGreen}{HTML}{CDDCEC}               % Pastel blue
+\definecolor{softMint2}{HTML}{D0E0F0}                 % Soft sky
+\definecolor{mintFresh}{HTML}{E0EAF5}                 % Fresh blue
+\definecolor{lightMint}{HTML}{ECF0F7}                 % Lightest blue
+\definecolor{dustyGreen}{HTML}{8FA8C8}                % Dusty blue
+\definecolor{powderGreen}{HTML}{F0F3F8}               % Powder blue
+\definecolor{fernGreen}{HTML}{5B8DBE}                 % Fern blue
+
+% --- Pink family redefined as warm accent family ---
+\definecolor{springBlossom}{HTML}{E0E8F0}             % Spring blue
+\definecolor{eucalyptusGreen}{HTML}{EDF1F7}           % Eucalyptus blue
+\definecolor{jadeMint}{HTML}{D8E2EE}                  % Jade blue
+\definecolor{lightEmerald}{HTML}{CDDCEC}              % Light blue
+\definecolor{mintLace}{HTML}{F0F4F8}                  % Lace blue
+\definecolor{pastelMint}{HTML}{E8EDF5}                % Pastel blue
+\definecolor{mistyGreen}{HTML}{F0F4F8}                % Misty blue
+\definecolor{jadeGold}{HTML}{8FA0B8}                  % Jade slate
+\definecolor{peachMint}{HTML}{F2EDE4}                 % Peach cream
+\definecolor{pearlMint}{HTML}{F5F7FA}                 % Pearl
+\definecolor{cucumberCream}{HTML}{EDF1F7}             % Cream blue
+\definecolor{melonGreen}{HTML}{D6E2F0}                % Melon blue
+\definecolor{leafGreen}{HTML}{CDD8E4}                 % Leaf blue-gray
+\definecolor{softMint3}{HTML}{E4EAF2}                 % Soft blue
+\definecolor{forestBlush}{HTML}{DAE3ED}               % Forest blue
+\definecolor{babyGreen}{HTML}{F0F4F8}                 % Baby blue
+\definecolor{petalGreen}{HTML}{E8EDF5}                % Petal blue
+\definecolor{mintCandy}{HTML}{F0F4F8}                 % Candy blue
+\definecolor{sageFuzz}{HTML}{E4EAF2}                  % Sage blue-gray
+
+% --- Special colors ---
+\definecolor{LightJade}{HTML}{E4EAF2}                 % Light jade blue
+\definecolor{Illuminate}{HTML}{D4943A}                % Amber gold
+\definecolor{LivingMint}{HTML}{7BAAD4}                % Living blue
+
+% --- Android colors redefined as themed palette ---
+\definecolor{androidRed}{HTML}{C05640}                 % Warm terracotta
+\definecolor{androidRedLight}{HTML}{FDF0ED}            % Very pale terracotta
+\definecolor{androidBlue}{HTML}{4A7FB5}                % Theme blue
+\definecolor{androidBlueLight}{HTML}{EBF0F7}           % Very pale blue
+
+\definecolor{androidGreen}{HTML}{4A90C4}              % Medium blue
+\definecolor{androidGreenLight}{HTML}{EBF0F7}         % Pale blue
+\definecolor{androidOrange}{HTML}{5BA8D4}              % Sky blue
+\definecolor{androidOrangeLight}{HTML}{E8F2FA}        % Very pale sky
+\definecolor{androidTeal}{HTML}{6AAED6}               % Light blue
+\definecolor{androidTealLight}{HTML}{EDF3F9}          % Very pale blue
+\definecolor{androidYellow}{HTML}{D4943A}              % Amber gold
+\definecolor{androidYellowLight}{HTML}{FDF6EC}         % Very pale amber
+\definecolor{androidPurple}{HTML}{7B68AE}              % Muted purple
+\definecolor{androidPurpleLight}{HTML}{F0ECF7}         % Very pale purple
+
+\definecolor{androidGray}{HTML}{CDD3DC}               % Blue-gray
+\definecolor{androidGrayLight}{HTML}{F0F2F5}          % Cool white
+
+% --- Beamer element colors ---
+\usecolortheme[named=forestGreen]{structure}
+
+\setbeamercolor{titlelike}{parent=structure}
+\setbeamercolor{block title}{bg=MediumGreen}
+\setbeamercolor{block body}{bg=InvisibleBlue}
+\setbeamercolor{block title example}{bg=MediumBlue}
+\setbeamercolor{block body example}{bg=InvisibleBlue}
+\setbeamercolor{block title alerted}{bg=cpelime}
+\setbeamercolor{block body alerted}{bg=cpeyellow}
+
+
+\usepackage{hyperref}

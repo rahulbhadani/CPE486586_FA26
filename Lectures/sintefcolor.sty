@@ -1,0 +1,30 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{sintefcolor}[2021/03/04]
+
+\RequirePackage{xcolor}
+
+% Main colour - Deep Navy
+\definecolor{maincolor}{RGB/cmyk}{36,52,96/100,77,33,18}
+
+% "Warm grey"
+\definecolor{sintefgrey}{RGB/cmyk}{240,241,245/3,2,0,4}
+\colorlet{sintefgray}{sintefgrey}
+
+% Blues
+\definecolorset{RGB/cmyk}{sintef}{}{lightgreen,  220,232,245/12, 7, 0, 0;%
+                                    green,       52,108,176/71,42, 0, 0;%
+                                    darkgreen,   25, 55,100/92,60,17,33}
+
+% Additional colours
+\definecolorset{RGB/cmyk}{sintef}{}{yellow, 212,148, 58/10,38,82, 0;%
+                                    purple,   106, 90,155/40,52, 0, 0;%
+                                    lilla,    80, 70,130/52,58, 0, 8,}
+
+\definecolor{nuaablue}{RGB/cmyk}{36,52,96/100,65,0,0}
+\definecolor{nuaalightblue}{RGB/cmyk}{36,52,96/25,100,0,0}
+
+% Deprecated colours for backward compatibility
+\definecolorset{HTML}{sintef}{}{cyan,      22A7E5;%
+                                magenta,   EC008C;%
+                                lightgrey, D8D0C7}
+\colorlet{sinteflightgray}{sinteflightgrey}
