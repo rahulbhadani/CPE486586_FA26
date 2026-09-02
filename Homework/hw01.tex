@@ -1,0 +1,321 @@
+\documentclass[12pt, xcolor=dvipsnames,svgnames,x11names]{article}
+
+\input{common}
+
+\renewcommand{\familydefault}{\rmdefault}   % Palatino (loaded in common.tex)
+
+
+% Redefine \maketitle to include tcolorbox
+% Palette: hdrplum (2E0014), hdrcoral (E17564), hdrslate (2F4F4F)
+\makeatletter
+\newcommand{\hdrrule}{{\color{hdrcoral}\rule{4.5em}{1.1pt}}}
+\renewcommand{\maketitle}{%
+      \begin{center}
+         \begin{tcolorbox}[
+               enhanced,
+               colback=white,
+               colframe=hdrslate,
+               boxrule=0.8pt,
+               arc=4pt,
+               left=0pt,
+               right=0pt,
+               top=0pt,
+               bottom=0pt,
+               drop shadow={hdrslate!35!white},
+         ]
+               % Header band: deep plum with a coral baseline
+               \begin{tcolorbox}[
+                  enhanced,
+                  colback=hdrplum,
+                  colframe=hdrplum,
+                  boxrule=0pt,
+                  arc=4pt,
+                  sharp corners=south,
+                  left=2em,
+                  right=2em,
+                  top=1.1em,
+                  bottom=1.1em,
+                  borderline south={2.2pt}{0pt}{hdrcoral},
+               ]
+                  \centering
+                  % Palatino has no bold small caps, so the title stays at medium
+                  % weight and gains presence from size and the dark band instead.
+                  {\LARGE\color{white}\linespread{1.25}\selectfont\@title}
+               \end{tcolorbox}
+
+               % Body: author, coral divider, then the due information
+               \vspace{1.1em}
+               \centering
+               {\large\color{hdrslate}\@author}\\[0.7em]
+               \hdrrule\\[0.7em]
+               {\normalsize\color{hdrplum}\@date}
+               \vspace{1.1em}
+         \end{tcolorbox}
+      \end{center}
+      \vspace{1.5em}
+}
+\makeatother
+
+
+
+
+\newcommand{\hw}{Homework 1:\\Python Practice and Linear Algebra}
+\newcommand{\duedate}{Sept 13, 2026, 11:59 PM}
+\newcommand{\hwturnin}{hw01}
+
+\newenvironment{multiequation}[1][]{%
+\begin{equation}%
+   \begin{aligned}%
+   \ifx#1\@empty\else\label{#1}\fi%
+}{%
+   \end{aligned}%
+\end{equation}%
+}
+\pagestyle{fancy}
+
+\lhead{\footnotesize{\coursenumber, \courseterm}, \footnotesize{The University of Alabama in Huntsville}}
+\chead{}
+\rhead{\footnotesize{\emph{\hw}}}
+\lfoot{\footnotesize{\instructorname}}
+\cfoot{\footnotesize{\thepage}}
+\rfoot{\footnotesize{\textit{Last Revised:~\today}}}
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+\newcommand{\minipagewidth}{0.8\columnwidth}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+
+\begin{document}
+
+
+\title{\textsc{\hw\\
+\coursenumber}}
+\author{Instructor: \instructorname}
+\date{Due: \duedate\\ 130 points}
+
+\maketitle
+
+\setlength{\unitlength}{1in}
+You are allowed to use a generative model-based AI tool for your assignment. However, you must submit an accompanying reflection report detailing how you used the AI tool, the specific query you made, and how it improved your understanding of the subject. You are also required to submit screenshots of your conversation with any large language model (LLM) or equivalent conversational AI, clearly showing the prompts and your login avatar. Some conversational AIs provide a way to share a conversation link, and such a link is desirable for authenticity. Failure to do so may result in actions taken in compliance with the plagiarism policy.
+
+Additionally, you must include your thoughts on how you would approach the assignment if such a tool were not available. Failure to provide a reflection report for every assignment where an AI tool is used may result in a penalty, and subsequent actions will be taken in line with the plagiarism policy.
+
+\subsection*{Submission instruction:}
+You may either complete your entire homework on Python Notebook  and submit a Google Colab link or you may choose a combination of a pdf and Google Colab Notebook. However, you must provide \textbf{publicly accessible} Google Colab URL on Canvas.
+
+For .pdf on Canvas, follow the format  \texttt{CPE486586-LastFirst-HW-XX}. For example, if your name is Sam Wells, your file name should be \texttt{CPE486586-WellsSam-HW-XX.pdf}.
+
+Your submission must contain your name and UAH Charger ID or your UAH email address.  Please number your pages as well.
+
+\textbf{Please write down your unique keyword corresponding to your package.}
+
+\vskip 1em
+\hrule
+\vskip 1em
+
+
+% {\LARGE \color{stormblue} \textbf{Python Practice-I}}
+
+\textbf{Note:} Python community has adopted following import convention that we will follow for the rest of the course:
+
+\begin{minted}
+      [
+      frame=lines,
+      framesep=1mm,
+      baselinestretch=1.2,
+      bgcolor=cpeyellow,
+      fontsize=\normalsize
+      ]
+      {python}
+      import numpy as np
+      import matplotlib.pyplot as plt
+      import pandas as pd
+      import seaborn as sns
+      import statsmodels as sm
+      \end{minted}
+
+
+{\large For this portion of the Homework, complete your implementation entirely in the notebook and for a portion, you will contribute to your package and demonstrate its usage in your notebook.}
+
+
+\section{Adding Two Vectors (10 Points)}
+What happens when try to add the following two vectors:
+
+\begin{enumerate}
+\item 
+
+\begin{minted}[
+      frame=lines,
+      framesep=1mm,
+      baselinestretch=1.2,
+      bgcolor=cpeyellow,
+      fontsize=\normalsize
+      ]{python}
+v = np.array([[1,5,6]])
+w = np.array([[2,4],[6,7]])
+\end{minted}
+What is the output of \texttt{v+w}?
+
+
+\item 
+
+\begin{minted}[
+      frame=lines,
+      framesep=1mm,
+      baselinestretch=1.2,
+      bgcolor=cpeyellow,
+      fontsize=\normalsize
+      ]{python}
+v  = np.array([[1,5]])
+w = np.array([[2,4],[6,7]])
+\end{minted}
+What is the output of \texttt{v+w}?
+\end{enumerate}
+\textbf{For both of the above questions, you need to describe why they work, or don't work, and what's the final addition?}
+
+\section{Inverse of a Matrix (10 Points)}
+Use Numpy linear algebra library to find the inverse of 
+
+
+\begin{minted}[
+      frame=lines,
+      framesep=1mm,
+      baselinestretch=1.2,
+      bgcolor=cpeyellow,
+      fontsize=\normalsize
+      ]{python}
+np.array([[4,6,7,12],[8,9,0,-5], [4,1,0,0],[3,2,0,1]])
+\end{minted}
+
+rounded to the two places after the decimal. Use rounding directly in the numpy as report the result.
+
+\section{The Longest Substring (10 Points)}
+Write a function \texttt{LongestSubstring} in Python that takes a Python string as an argument. Your function should perform the following task:
+
+\begin{enumerate}
+   \item If the string is empty print `empty string' and return.
+   \item If the string length exceeds 20 characters, print `maximum length exceeded' and return.
+   \item Otherwise, find the long substring in the given string that contains same characters. For example, if the input string is `2242777232888823', then the output should be '8888'.
+   \item Write code to use the function \texttt{LongestSubstring} as well.
+\end{enumerate}
+The implementation doesn't need to be the most efficient implementation, and you may choose to use nested \texttt{for} loops as well.
+
+
+\section{Data and Time in Python (5 Points)}
+The built-in Python \texttt{datetime} module provides \texttt{datetime}, \texttt{date}, and \texttt{time} types. The \texttt{datetime} type combines the information stored in date and time.
+
+Write a Python program that creates an empty file with the file name in the format ML-HW01\_\%Y-\%m-\%d-\%H-\%M.txt, where \%Y is substitute for current year,  \%m is the substitute for current month, \%d is substitute for current day, \%H is the substitute for current hour, and \%M is the substitute for current minute. One possibility can be a file name \textbf{ML-HW01-2011-10-29-20-30.txt}.
+
+
+\section{Working with Data Types in Python (5 Points)}
+In Python, there are some special data types such as table, and lists.
+A tuple is a fixed-length, immutable sequence of Python objects which, once assigned,
+cannot be changed. An example is \texttt{(2, 4, 5)}. On the other hand, lists are variable length and their contents can be modified in place. An example is \texttt{[1, 4, 5]}. Write a Python function that takes an argument as a list or a tuple, and returns a tuple containing the number of element the list or a tuple has, the maximum value, and a minimum value.
+
+\section{Slicing (5 Points)}
+   You can select sections of most sequence types by using slice notation, which in its
+   basic form consists of \texttt{start:stop} passed to the indexing operator \texttt{[]}:
+
+   In this part of the homework, you will create a $4\times4$ tensor using PyTorch package. Initialize your tensor randomly with only 0s and 1s. Tensor is a generalized name of a multi-dimensional array or matrix in machine learning domain. Note that this concept of tensor differs from one seen in Mathematics textbooks. Write a Python program to slice the last column of a $4\times4$ tensor.
+
+
+\section{Dictionary (5 Points)}
+Dictionary is a key-value pair data-types in Python. Create a dictionary in Python consisting of two letter state code of the neighboring states of Alabama as the key and their capital as the value.
+
+\section{Vector and Matrix Operations (10 Points)}
+Let $\mathbf{u} = [4, -1, 3]^T$, $\mathbf{v} = [2, 0, 5]^T$. 
+\begin{enumerate}
+      \item Compute the inner product $\mathbf{u} \cdot \mathbf{v}$.
+      \item Compute the angle between the vectors in degrees.
+      \item Implement the calculation in NumPy and verify the result.
+\end{enumerate}
+
+
+\section{Matrix Multiplication and Rank (10 Points)}
+Given matrices: 
+\[
+A = \begin{bmatrix} 2 & 4 \\ 0 & 3 \\ 1 & -1 \end{bmatrix}, \quad B = \begin{bmatrix} 1 & 2 & 3 \\ 0 & -1 & 1 \end{bmatrix}
+\]
+\begin{enumerate}
+      \item Compute $AB$.
+      \item Determine the rank of matrix $A$.
+      \item Use NumPy to compute the rank.
+\end{enumerate}
+
+\section{Eigenvalue Decomposition with PyTorch (10 Points)}
+Let $M = \begin{bmatrix} 2 & 1 \\ 1 & 3 \end{bmatrix}$.
+\begin{enumerate}
+      \item Use PyTorch to compute the eigenvalues and eigenvectors.
+      \item Verify that $Mv = \lambda v$ for one eigenpair.
+\end{enumerate}
+
+\bigskip
+
+
+
+\section{Solving System of Linear Equations(10 Points)}
+
+Consider a system of linear equations:
+
+\begin{multiequation}
+4x + 3y + 2z & = 25\\
+-2x + 2y + 3z & = -10\\
+3x -5y + 2z & = -4\\
+\end{multiequation}
+
+In a matrix form, they can be written $AX = B$. Identify $A$, and $B$.
+
+Write a Python function \texttt{linearsolve} that takes two arguments: (a) matrix $A$; (b) vector $B$ and return the solution vector $X$. You may implement your solution using Numpy or PyTorch.
+
+\bigskip
+
+\hrule
+
+\bigskip
+
+\textbf{Through the next few questions, you will make a contribution to your Python package with your unique keyword name.}
+
+\section{Elementary Operations on Matrices (40 Points)}
+
+Create a subpackage called \texttt{matrix} in your package. Inside the subpackage, you will be creating a module \texttt{elementary.py} with the following requirements usin PyTorch based arrays and matrices:
+
+\begin{enumerate}
+   \item Write a function \texttt{rowswap} that takes a matrix as input, along with the index of source row and the target row, and swap the content of source row with the target row.
+   \item Write a function \texttt{rowscale} that takes a matrix as an input, along with the index of source row and scaling factor, and perform row-scaling and return the new matrix. The scaling factor can be any real number, positive or negative.
+   \item Write a function \texttt{rowreplacement} to perform $jR_i + kR_j$ that takes a matrix as an input, first row, the second row, the scaling factors $j$ and $k$. You may use function \texttt{rowscale} for scaling operation.
+   \item Please refer to the discussion on Row Echelon Form from Chapter 03 around slide 74 onwards. Pivot element is the element in each row of a matrix below which there is all zero (but not above). We also consider the reduced Row Echelon Form where each Pivot element is 1. As an example, in the first row, the first column it is always one and below it, all zero.
+   
+   Write a function called \texttt{rref} that takes a matrix as an input. The task is to (i) Make the pivot element in the every row 1, (ii) make all the element below pivot element as 0. Here, you need to use if-else or other programming construct to determine which rows to swap, and what should be the scaling factor. The function will be return the reduced row echelon form of the matrix. You can use three functions developed earlier to assisting you in implementing \texttt{rref}.
+   \item Explain your idea of implementing \texttt{rref} in paragraphs.
+   \item You must also add \texttt{\_\_init\_\_.py} with appropriate import code to make sure your subpackage is a valid and importable subpackage.
+   \item Build your package, commit to GitHub and publish to PYPI after properly incrementing the version number, install the package in your Google Colab notebook using \texttt{pip install} command.
+   \item To test your program consider the input matrix as 
+   
+   \begin{multiequation}
+      \begin{bmatrix}
+      1 & 3 & 0 & 0 & 3\\
+      0 & 0 & 1 & 0 & 9\\
+      0 & 0 & 0 & 1 & -4
+   \end{bmatrix}
+   \end{multiequation}
+
+   \begin{itemize}
+      \item Perform elementary operation $R_1 \leftrightarrow  R_2$  using \texttt{rowswap} function.
+      \item Perform elementary operation $\frac{1}{3}R_1$  using \texttt{rowscale} function on the resulting matrix from the previous step.
+      \item Perform elementary operation $R_3 = -3R_1 + R_3$  using \texttt{rowreplacement} function on the resulting matrix from the previous step.
+   \end{itemize}
+\end{enumerate}
+
+\textbf{Tip:} Use \texttt{\_\_main\_\_} function in your module {elementary.py} to directly test your code first before publishing your package Github and PYPI. You can write test code from Step 6 in \texttt{\_\_main\_\_} and execute \texttt{python elementary.py} in package's UV environment in your local machine.
+
+Do not forget to commit your package code to GitHub. That will be a part of the assessment.
+
+\end{document}
