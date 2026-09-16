@@ -1,0 +1,318 @@
+\documentclass[12pt, xcolor=dvipsnames,svgnames,x11names]{article}
+
+\input{common}
+
+\renewcommand{\familydefault}{\rmdefault}   % Palatino (loaded in common.tex)
+
+
+% Redefine \maketitle to include tcolorbox
+% Palette: hdrplum (2E0014), hdrcoral (E17564), hdrslate (2F4F4F)
+\makeatletter
+\newcommand{\hdrrule}{{\color{hdrcoral}\rule{4.5em}{1.1pt}}}
+\renewcommand{\maketitle}{%
+      \begin{center}
+         \begin{tcolorbox}[
+               enhanced,
+               colback=white,
+               colframe=hdrslate,
+               boxrule=0.8pt,
+               arc=4pt,
+               left=0pt,
+               right=0pt,
+               top=0pt,
+               bottom=0pt,
+               drop shadow={hdrslate!35!white},
+         ]
+               % Header band: deep plum with a coral baseline
+               \begin{tcolorbox}[
+                  enhanced,
+                  colback=hdrplum,
+                  colframe=hdrplum,
+                  boxrule=0pt,
+                  arc=4pt,
+                  sharp corners=south,
+                  left=2em,
+                  right=2em,
+                  top=1.1em,
+                  bottom=1.1em,
+                  borderline south={2.2pt}{0pt}{hdrcoral},
+               ]
+                  \centering
+                  % Palatino has no bold small caps, so the title stays at medium
+                  % weight and gains presence from size and the dark band instead.
+                  {\LARGE\color{white}\linespread{1.25}\selectfont\@title}
+               \end{tcolorbox}
+
+               % Body: author, coral divider, then the due information
+               \vspace{1.1em}
+               \centering
+               {\large\color{hdrslate}\@author}\\[0.7em]
+               \hdrrule\\[0.7em]
+               {\normalsize\color{hdrplum}\@date}
+               \vspace{1.1em}
+         \end{tcolorbox}
+      \end{center}
+      \vspace{1.5em}
+}
+\makeatother
+
+
+
+
+\newcommand{\hw}{Homework 2:\\\normalsize Python Practice and Statistics  \& Probability}
+\newcommand{\duedate}{Sept 26, 2026, 11:59 PM}
+
+\newenvironment{multiequation}[1][]{%
+\begin{equation}%
+   \begin{aligned}%
+   \ifx#1\@empty\else\label{#1}\fi%
+}{%
+   \end{aligned}%
+\end{equation}%
+}
+\pagestyle{fancy}
+
+\lhead{\footnotesize{\coursenumber, \courseterm}, \footnotesize{UAH}}
+\chead{}
+\rhead{\footnotesize{\emph{\hw}}}
+\lfoot{\footnotesize{\instructorname}}
+\cfoot{\footnotesize{\thepage}}
+\rfoot{\footnotesize{\textit{Last Revised:~\today}}}
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+\newcommand{\minipagewidth}{0.8\columnwidth}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+
+
+\begin{document}
+
+
+\title{\textsc{\hw\\
+\coursenumber}}
+\author{Instructor: \instructorname}
+\date{Due: \duedate\\ 135 points (586), 115 Points (486)}
+
+\maketitle
+
+\setlength{\unitlength}{1in}
+You are allowed to use a generative model-based AI tool for your assignment. However, you must submit an accompanying reflection report detailing how you used the AI tool, the specific query you made, and how it improved your understanding of the subject. You are also required to submit screenshots of your conversation with any large language model (LLM) or equivalent conversational AI, clearly showing the prompts and your login avatar. Some conversational AIs provide a way to share a conversation link, and such a link is desirable for authenticity. Failure to do so may result in actions taken in compliance with the plagiarism policy.
+
+Additionally, you must include your thoughts on how you would approach the assignment if such a tool were not available. Failure to provide a reflection report for every assignment where an AI tool is used may result in a penalty, and subsequent actions will be taken in line with the plagiarism policy.
+
+\subsection*{Submission instruction:}
+You may either complete your entire homework on Python Notebook  and submit a Google Colab link or you may choose a combination of a pdf and Google Colab Notebook. However, you must provide \textbf{publicly accessible} Google Colab URL on Canvas.
+
+For .pdf on Canvas, follow the format  \texttt{CPE486586-LastFirst-HW-XX}. For example, if your name is Sam Wells, your file name should be \texttt{CPE486586-WellsSam-HW-XX.pdf}.
+
+Your submission must contain your name and UAH Charger ID or your UAH email address.  Please number your pages as well.
+
+\textbf{Please write down your unique keyword corresponding to your package and your Github account URL.}
+
+\vskip 1em
+\hrule
+\vskip 1em
+
+
+% {\LARGE \color{stormblue} \textbf{Python Practice-I}}
+
+
+{{\LARGE \textbf{Theory}}}
+
+ \section{Disjoint Sets (10 points)}
+    If $P(A) = \tfrac{1}{3}$ and $P(B^c) = \frac{1}{4}$, can $A$ and $B$ be disjoint? Explain.
+
+
+
+\section{Moment Generating Function (10 Points)}
+
+The moment generating function (MGF) of a random variable $X$, denoted as $M_X(t)$ is given by 
+
+\begin{multiequation}
+M_X(t) = \Ebb(e^{tX}) = \int_{-\infty}^\infty e^{tx}f_X(x)dx
+\end{multiequation}
+
+for a continuous random variable.
+
+Compute the MGF of a standard normal distribution with mean 0 and standard deviation 1.
+
+
+% Casellas Q2.22
+\section{Probability Density Function (10 Points)}
+
+Let $X$ have the pdf 
+
+\begin{multiequation}
+f(x) = \frac{4}{\beta^3 \sqrt{\pi}} x^2 e^{-x^2} e^{-x^2/\beta^2}, \quad 0  < x < \infty, \quad \beta > 0
+\end{multiequation}
+
+Check whether $f(x)$ is a pdf.
+
+\bigskip
+
+\bigskip
+
+{{\LARGE \textbf{Practice}}}
+
+    \section{Dice Roll (10 points)}
+    
+
+Write a Python program to simulate the rolling of a  fair dice. After 100 tosses what is the probability of getting a 6? What about after 1000 rolls? What about after 10000 rolls?
+
+ \section{Three coins toss and CDF (10 points)}
+Consider the experiment of tossing three fair coins, and let $X = $ number of heads observed. The CDF of X is 
+\begin{equation}
+    \begin{aligned}
+        F_X(x) = \begin{cases}
+            0, \quad -\infty  < x < 0\\
+            \frac{1}{8}, \quad 0\leq x < 1\\
+            \frac{1}{2}, \quad 1 \leq x < 2\\
+            \frac{7}{8}, \quad 2 \leq x < 3\\
+            1, \quad 3 \leq x < \infty
+        \end{cases}
+    \end{aligned}
+\end{equation}
+
+Write a Python program to draw a graph $F_X(x)$ using step functions. Determine $F_X(2.5)$ using Python.
+
+
+\section{Probability Density Functions: Normal Distribution (10 points)}
+Refer to the Python Notebook \url{https://github.com/rahulbhadani/CPE486586_FA25/blob/main/Code/CPE486586_Ch04_SyntheticDataGeneration.ipynb} some related examples.
+
+
+Write a Python program to generate 10000 random samples following a Normal distribution. Keep $\mu = 0.5$ fixed and vary the standard deviation $\sigma  = $ 0.3, 5.0, and 10.0. Plot the probability density function using histogram and kernel density estimation (KDE) plot. Comment on your observation about changing the standard deviation and its effect on the shape of the probability density function.
+
+\section{Data Exploration with Motorway Control System (MCS) Data (25 Points)}
+
+
+Download the MCS data from \url{https://github.com/rahulbhadani/Datasets/blob/master/mcsOct2018.csv}.
+
+For this portion of the assignment, you will use \textbf{polars} Python package that you can install using \texttt{uv add polars} in your UV environment or \texttt{!pip install polars} in your Google Colab notebook.
+
+Perform the following task:
+
+\begin{enumerate}
+\item Read the dataset into a polars data frame. How many columns the dataframe has? \textbf{(2 Points)}
+
+\item Convert date column to POSIX format, sort values chronologically. POSIX time represents the number of seconds since January 1, 1970 00:00:00 UTC. This is a common way to represent time in Linux and is  useful representation for data analysis and machine learning task. \textbf{(5 Points)}
+
+\item Count the total number of records per \texttt{fk\_id} and compute the percentage of total data that each sensor
+contributed. \textbf{(5 Points)}
+
+\item Replace \textbf{NULL} with \texttt{np.nan} (not a number from Numpy). Count how many valid lanes were used per entry and add a new column,
+\texttt{num\_lanes\_used}. \textbf{(3 Points)}
+
+\item Identify potential sensor issues or outliers. Flag rows where \texttt{speed\_std\_dev > 10}, and rows where \texttt{flow ==
+0}, and then add a Boolean \texttt{is\_anomaly} column. \textbf{(5 Points)}
+
+\item Plot speed as a function of time using line plot. \textbf{(5 Points)}
+
+
+\end{enumerate}
+
+
+\section{Polars on EV Car Sales Data \textbf{(10 Points)}}
+
+Download EV car sales data from \url{https://github.com/rahulbhadani/Datasets/blob/master/IEA-EV-dataEVsalesHistoricalCars.csv}.
+
+Use \textbf{polars} Python package for following data analysis:
+
+\begin{enumerate}
+    \item Create two time series plots (one for BEV, one for PHEV) showing total EV sales over time globally (excluding \textit{World}) for the top 3 countries with the highest overall EV sales. \textbf{(2 Points)}
+    \item For each country, calculate the year-over-year percentage growth in BEV sales. Which country had the highest growth in any year? Display the result as a sorted DataFrame. \textbf{(2 Points)}
+    \item Compute the average EV stock (parameter = ``EV stock") between 2015 and 2020 for each country. Display the top 5 countries with the highest average EV stock using a horizontal bar chart. \textbf{(3 Points)}
+    \item For each year, compute the proportion of BEV vs. PHEV in total EV sales across all countries. Visualize the result using a stacked bar chart.\textbf{(3 Points)}
+\end{enumerate}
+
+\bigskip
+\hrule
+\bigskip
+
+\textbf{Through the next few questions, you will make a contribution to your Python package.}
+
+
+\section{Cryptographically Secure Distribution (40 Points)}
+We will learn to generate random number drawn from a given distribution that is cryptographically secure. Consider the code snippets below:
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+bgcolor=LightGray,
+fontsize=\footnotesize
+]
+{python}
+
+import secrets
+
+def uniform(a: float = 0.0, b: float = 1.0) -> float:
+    """Cryptographically secure uniform sample."""
+    # 53 random bits gives 53-bit precision double
+    u = secrets.randbits(53) / (1 << 53)   # in [0, 1)
+    return a + (b - a) * u
+
+\end{minted}
+
+
+Here, we use \textbf{secrets} module from Python that is designed for cryptographic security (e.g., generating keys, tokens), ensuring the randomness is unpredictable and suitable for security-sensitive applications. Floating-point numbers in Python (IEEE 754 double-precision) use 53 bits for precision. Generating 53 random bits ensures the output leverages the full precision of the float mantissa, avoiding bias or loss of granularity. Dividing the random 53-bit integer by $2^{53}$ (i.e., $1 << 53$) maps the value to the interval $[0, 1)$.
+
+
+\begin{enumerate}
+\item Your job is create a subpackage called \texttt{distributions} in your package. Inside your subpackage, create a module called \texttt{cvdistributions.py}. Add the above function to your module and demonstrate its use in your Colab notebook by generating 1000 random samples that are uniformly distributed. Create a \textbf{histogram plot} to demonstrate that 100000 random samples are indeed uniformly distributed. \textbf{(10 Points)}
+
+Note that samples generated this way are independent samples.
+
+\item \textbf{Inverse Transform Sampling} method can be used to generate random samples from any distribution.
+
+Inverse transform sampling requires us to know CDF of the desired probability distribution. A nice tutorial is provided by Prof. Ben Lambert at \url{https://www.youtube.com/watch?v=rnBbYsysPaU}.
+
+Inverse Transform Sampling method says that if we know the CDF $F(x)$ of any distribution, we can generate random samples from its distribution. $F: \Rbb to [0,1]$ is non-negative, non-decreasing, continuos from the right and has left hand limits. 
+
+We can write the inverse of $F$, $F^{-1}: [0, 1] \to \Rbb$ as 
+
+\begin{multiequation}
+F^{-1}(y) = \min\{x: F(x) \geq y \}, y \in [0, 1]
+\end{multiequation}
+
+In this case, we can define the random variable corresponding to $F$ as $X = F^{-1}(U)$ where $U$ has the continuous uniform distribution over the interval $(0,1)$. Then $X$ is distributed as $F$, that is, $P(X\leq x) = F(x), x\in \Rbb$.
+
+As an example, CDF of exponential distribution is $F(x) = 1-e^{-\lambda} x, x\geq 0$ with $\lambda >0$. Writing $y = 1 - e^{-\lambda  x}$, where $y\in (0, 1)$ we can rearrange it as $x = -\frac{1}{\lambda}\ln(1-y)$. This would be mean $X = -\frac{1}{\lambda}\ln(1-U)$. But if $U\sim Unif(0,1)$, then it means $1-U \sim Unif(0,1)$, then we could also $1-U$ by $U$ as well. 
+
+Thus, we can get an exponentially distributed random sample in two steps:
+
+\begin{enumerate}
+\item Generate a sample $y$ from $U(0,1)$.
+\item Set $x = -\frac{1}{\lambda}\ln(y)$.
+\end{enumerate}
+Repeat for all $n$ samples you want to generate.
+
+Create a function called \textbf{exponentialdist} in your \texttt{cvdistributions.py} module that takes $\lambda$ as an argument and returns a rnadom sample that is exponentially distributed.
+
+Plot a histogram of 100000 randomly distributed using exponential distribution in your Colab notebook.
+
+\textbf{(10 Points)}
+
+\item \textbf{Only for CPE 586 Students:}
+
+How would your algorithm modify if you need to generate random samples from a discrete distribution using inverse transform sampling technique? Your explanation should include necessary mathematical formulation as well.
+
+First write down the CDF of Poisson distribution and then write a function \textbf{poissiondist} takes a parameter $\lambda$ in your \texttt{cvdistributions.py} module that generates 
+Poisson distributed random samples.
+
+ Plot a histogram of 100000 randomly distributed using Poisson distribution in your Colab notebook.
+
+
+\textbf{(20 Points)}
+
+\end{enumerate}
+
+\end{document}
