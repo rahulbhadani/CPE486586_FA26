@@ -239,7 +239,7 @@ H = \begin{bmatrix}
 \begin{column}{0.5\linewidth}
     \begin{enumerate}
     \item If all eigenvalues of Hessian function are positive, then $H$ is positive definite, and critical point is local minimum.
-    \item If all eigenvalues of Hessian function are negative, then $H$ is positive definite, and critical point is local maximum.
+    \item If all eigenvalues of Hessian function are negative, then $H$ is negative definite, and critical point is local maximum.
     \item If eigenvalues of Hessian function are  both positive and negative, then critical point is a saddle point.
     \end{enumerate}
 \end{column}
@@ -401,12 +401,12 @@ In such a case, the optimality occurs when $\nabla f + \lambda \nabla g = 0$.
 
 \begin{frame}{Example 5}
 \begin{tblock}{Maximize/Minimize}
-Cost function: $f(x, y) = 81x^2 + y^2$, subject to the constraint $4x^2 + y^2 = 0$    
+Cost function: $f(x, y) = 81x^2 + y^2$, subject to the constraint $4x^2 + y^2 = 9$    
 \end{tblock}
 
 \textbf{Solution:}
 
-Lagrange Multiplier is $L(x, y, \lambda) = f(x, y) - \lambda g(x, y)$ where $g(x, y) = 4x^2  + y^2 - 0 = 0$.
+Lagrange Multiplier is $L(x, y, \lambda) = f(x, y) - \lambda g(x, y)$ where $g(x, y) = 4x^2  + y^2 - 9 = 0$.
 
 \begin{multiequation}
 \nabla f = \begin{bmatrix}
@@ -663,7 +663,7 @@ While the batch gradient descent always converges, it is slow and costly. Stocha
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}[containsverbatim]{TensorFlow for Gradient Descent} 
+\begin{frame}[containsverbatim]{PyTorch for Gradient Descent} 
 
 \begin{columns}
     \column{0.5\linewidth}
@@ -741,7 +741,7 @@ Automatically calculate the derivative of a function by repeatedly applying the 
 \column{0.5\linewidth}
 We will construct expression graph of $C(y, wx + b) = y - max(0, wx + b)$ to understand how automatic differentiation works. Automatic differentiation only works with numerical values, hence, let $y = 5,$, $w = 2$, $x=1$, $b=1$.
 
-Our target is to calculate $\cfrac{\partial C}{\partial w_1}$.
+Our target is to calculate $\cfrac{\partial C}{\partial w}$.
 
 \column{0.5\linewidth}
 \begin{tikzpicture}[scale=1.0, every node/.style={scale=0.8}]
@@ -818,7 +818,7 @@ Our target is to calculate $\cfrac{\partial C}{\partial w_1}$.
 \begin{multiequation}
 \cfrac{\partial w_5}{\partial w_1} & = \cfrac{\partial (w_1\cdot w_2)}{\partial w_1} = w_2\\
 \cfrac{\partial w_5}{\partial w_2} & = \cfrac{\partial (w_1\cdot w_2)}{\partial w_2} = w_1\\
-\cfrac{\partial w_6}{\partial w_5} & =  \cfrac{\partial (w_5 + w_3)}{\partial w_3} = 1\\
+\cfrac{\partial w_6}{\partial w_5} & =  \cfrac{\partial (w_5 + w_3)}{\partial w_5} = 1\\
 \cfrac{\partial w_7}{\partial w_6} & = \cfrac{\partial max(0, w_6)}{\partial w_6} = \begin{cases} 0, w_6<0\\1 , w_6>0\end{cases}
 \end{multiequation}
 
@@ -836,11 +836,446 @@ Our target is to calculate $\cfrac{\partial C}{\partial w_1}$.
 \end{columns}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Terminology (1 of 2): the expression graph}
+\begin{columns}[T]
+\begin{column}{0.54\textwidth}
+\small
+\textbf{Expression graph.} A directed acyclic graph that records how a
+value is computed from primitive operations.
+
+\medskip
+\textbf{Leaf.} An input node, such as $x$ or $y$. It has no arguments.
+
+\medskip
+\textbf{Interior node.} One primitive operation, such as $+$, $-$ or
+$/$, applied to its arguments.
+
+\medskip
+\textbf{Root.} The output node. Here it is $C$.
+
+\medskip
+\textbf{Edge} $u \to v$. The value $u$ is an argument of $v$. The edge
+has the \emph{local derivative} $\partial v / \partial u$.
+
+\medskip
+\textbf{Evaluation trace.} The list of intermediate variables
+$v_1, v_2, \dots$ in the order they are computed.
+\end{column}
+\begin{column}{0.44\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[adroot] (C)   at (0,4.3)  {$C$};
+  \node[adop]   (div) at (0,3.1)  {$/$};
+  \node[adop]   (add) at (-1.3,1.6) {$+$};
+  \node[adop]   (sub) at (1.3,1.6)  {$-$};
+  \node[adleaf] (x)   at (-1.3,0) {$x$};
+  \node[adleaf] (y)   at (1.3,0)  {$y$};
+  \draw[adedge] (x) -- (add);
+  \draw[adedge] (x) -- (sub);
+  \draw[adedge] (y) -- (add);
+  \draw[adedge] (y) -- (sub);
+  \draw[adedge] (add) -- (div);
+  \draw[adedge] (sub) -- (div);
+  \draw[adedge] (div) -- (C);
+  \node[adname, right=3mm of C]   {root};
+  \node[adname, right=3mm of div] {interior};
+  \node[adname, below=2mm of x]   {leaf};
+  \node[adname, below=2mm of y]   {leaf};
+\end{tikzpicture}
+
+\medskip
+{\small $C = \dfrac{x + y}{x - y}$}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Terminology (2 of 2): fan-out, fan-in, adjoint}
+\begin{columns}[T]
+\begin{column}{0.54\textwidth}
+\small
+\textbf{Fan-out} of a node. The number of nodes that use it as an
+argument. Here $x$ and $y$ each have fan-out 2.
+
+\medskip
+\textbf{Fan-in} of a node. The number of its arguments. A binary
+operator has fan-in 2.
+
+\medskip
+\textbf{Path.} A chain of edges from a leaf to the root. A node with
+fan-out 2 opens two paths.
+
+\medskip
+\textbf{Adjoint} of a node $v$. The quantity
+$\adj{v} = \partial C / \partial v$. Reverse mode computes adjoints,
+starting with $\adj{C} = 1$ at the root.
+
+\medskip
+\textbf{Forward pass.} Compute values from the leaves up.
+\textbf{Reverse pass.} Compute adjoints from the root down.
+\end{column}
+\begin{column}{0.44\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[adroot] (C)   at (0,4.3)  {$C$};
+  \node[adop]   (div) at (0,3.1)  {$/$};
+  \node[adop]   (add) at (-1.3,1.6) {$+$};
+  \node[adop]   (sub) at (1.3,1.6)  {$-$};
+  \node[adleaf] (x)   at (-1.3,0) {$x$};
+  \node[adleaf] (y)   at (1.3,0)  {$y$};
+  \draw[adcold] (y) -- (add);
+  \draw[adcold] (y) -- (sub);
+  \draw[adhot]  (x) -- (add);
+  \draw[adhot]  (x) -- (sub);
+  \draw[adedge] (add) -- (div);
+  \draw[adedge] (sub) -- (div);
+  \draw[adedge] (div) -- (C);
+  \node[adbar, below=2mm of x] {fan-out of $x$ is 2};
+  \node[adname, right=3mm of div] {fan-in 2};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Forward pass at $x = 3$, $y = 1$}
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+\small
+Evaluation trace:
+\begin{align*}
+v_1 &= x = 3\\
+v_2 &= y = 1\\
+v_3 &= v_1 + v_2 = 4\\
+v_4 &= v_1 - v_2 = 2\\
+v_5 &= v_3 / v_4 = 2\\
+C   &= v_5 = 2
+\end{align*}
+Reverse-mode AD stores $v_3$ and $v_4$ during the forward pass. The reverse pass will need them.
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[adroot] (C)   at (0,4.3)  {$C$};
+  \node[adop]   (div) at (0,3.1)  {$/$};
+  \node[adop]   (add) at (-1.3,1.6) {$+$};
+  \node[adop]   (sub) at (1.3,1.6)  {$-$};
+  \node[adleaf] (x)   at (-1.3,0) {$x$};
+  \node[adleaf] (y)   at (1.3,0)  {$y$};
+  \draw[adedge] (x) -- (add);
+  \draw[adedge] (x) -- (sub);
+  \draw[adedge] (y) -- (add);
+  \draw[adedge] (y) -- (sub);
+  \draw[adedge] (add) -- (div);
+  \draw[adedge] (sub) -- (div);
+  \draw[adedge] (div) -- (C);
+  \node[adval, right=2mm of C]   {$2$};
+  \node[adval, right=2mm of div] {$v_5 = 2$};
+  \node[adval, left=2mm of add]  {$v_3 = 4$};
+  \node[adval, right=2mm of sub] {$v_4 = 2$};
+  \node[adval, left=2mm of x]    {$v_1 = 3$};
+  \node[adval, right=2mm of y]   {$v_2 = 1$};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Local derivatives on the edges}
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+\small
+Each operator knows only its own derivative:
+\begin{align*}
+\frac{\partial v_3}{\partial v_1} &= 1, &
+\frac{\partial v_3}{\partial v_2} &= 1,\\[1ex]
+\frac{\partial v_4}{\partial v_1} &= 1, &
+\frac{\partial v_4}{\partial v_2} &= -1,\\[1ex]
+\frac{\partial v_5}{\partial v_3} &= \frac{1}{v_4} = 0.5, &
+\frac{\partial v_5}{\partial v_4} &= -\frac{v_3}{v_4^2} = -1.
+\end{align*}
+The last two use the stored forward values. A node never needs to see
+the whole graph.
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[adroot] (C)   at (0,4.3)  {$C$};
+  \node[adop]   (div) at (0,3.1)  {$/$};
+  \node[adop]   (add) at (-1.5,1.6) {$+$};
+  \node[adop]   (sub) at (1.5,1.6)  {$-$};
+  \node[adleaf] (x)   at (-1.5,0) {$x$};
+  \node[adleaf] (y)   at (1.5,0)  {$y$};
+  \draw[adedge] (x) -- node[adlocal, left] {$1$} (add);
+  \draw[adedge] (y) -- node[adlocal, right] {$-1$} (sub);
+  \draw[adedge] (x) -- node[adlocal, pos=0.22, above] {$1$} (sub);
+  \draw[adedge] (y) -- node[adlocal, pos=0.22, above] {$1$} (add);
+  \draw[adedge] (add) -- node[adlocal, above left] {$0.5$} (div);
+  \draw[adedge] (sub) -- node[adlocal, above right] {$-1$} (div);
+  \draw[adedge] (div) -- node[adlocal, right] {$1$} (C);
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Chain rule: product along a path, sum over paths}
+\begin{columns}[T]
+\begin{column}{0.54\textwidth}
+\small
+$x$ has fan-out 2, so it reaches $C$ by two paths:
+$x \to v_3 \to v_5$ and $x \to v_4 \to v_5$.
+\[
+\frac{\partial C}{\partial x}
+= \frac{\partial C}{\partial v_5}
+\left(
+\frac{\partial v_5}{\partial v_3}\frac{\partial v_3}{\partial v_1}
++
+\frac{\partial v_5}{\partial v_4}\frac{\partial v_4}{\partial v_1}
+\right)
+\]
+\[
+= 1\,\big(0.5 \cdot 1 + (-1)\cdot 1\big) = -0.5
+\]
+Check: $\dfrac{\partial C}{\partial x} = \dfrac{-2y}{(x-y)^2} = -0.5$.
+
+\medskip
+{\color{adAccent}Dropping the second path gives $0.5$, with the wrong
+sign.} A single-path graph doesn't have a sum. The sum appears  where a node has fan-out greater than 1.
+\end{column}
+\begin{column}{0.44\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[adroot] (C)   at (0,4.3)  {$C$};
+  \node[adop]   (div) at (0,3.1)  {$/$};
+  \node[adop]   (add) at (-1.3,1.6) {$+$};
+  \node[adop]   (sub) at (1.3,1.6)  {$-$};
+  \node[adleaf] (x)   at (-1.3,0) {$x$};
+  \node[adleaf] (y)   at (1.3,0)  {$y$};
+  \draw[adcold] (y) -- (add);
+  \draw[adcold] (y) -- (sub);
+  \draw[adhot]  (x) -- (add);
+  \draw[adhot]  (x) -- (sub);
+  \draw[adhot]  (add) -- (div);
+  \draw[adhot]  (sub) -- (div);
+  \draw[adhot]  (div) -- (C);
+  \node[adbar, left=2mm of add]  {path 1};
+  \node[adbar, right=2mm of sub] {path 2};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Reverse pass: adjoints add up at fan-out}
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+\small
+Visit nodes from the root down:
+\begin{enumerate}
+\item $\adj{v}_5 = \adj{C} = 1$
+\item $\adj{v}_3 = \adj{v}_5 \cdot \dfrac{1}{v_4} = 0.5$,\\[0.5ex]
+      $\adj{v}_4 = \adj{v}_5 \cdot \Big(-\dfrac{v_3}{v_4^2}\Big) = -1$
+\item $\adj{x} = \adj{v}_3 \cdot 1 + \adj{v}_4 \cdot 1 = -0.5$
+\item $\adj{y} = \adj{v}_3 \cdot 1 + \adj{v}_4 \cdot (-1) = 1.5$
+\end{enumerate}
+Steps 3 and 4 are the sums. A leaf's adjoint is final only after
+both of its consumers have reported. So the pass must follow a
+reverse topological order.
+
+\medskip
+The sum happens once, at the node. Paths are not listed.
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[adroot] (C)   at (0,4.3)  {$C$};
+  \node[adop]   (div) at (0,3.1)  {$/$};
+  \node[adop]   (add) at (-1.3,1.6) {$+$};
+  \node[adop]   (sub) at (1.3,1.6)  {$-$};
+  \node[adleaf] (x)   at (-1.3,0) {$x$};
+  \node[adleaf] (y)   at (1.3,0)  {$y$};
+  \draw[adedge] (x) -- (add);
+  \draw[adedge] (x) -- (sub);
+  \draw[adedge] (y) -- (add);
+  \draw[adedge] (y) -- (sub);
+  \draw[adedge] (add) -- (div);
+  \draw[adedge] (sub) -- (div);
+  \draw[adedge] (div) -- (C);
+  \node[adbar, right=2mm of C]   {$\adj{C} = 1$};
+  \node[adbar, right=2mm of div] {$\adj{v}_5 = 1$};
+  \node[adbar, left=2mm of add]  {$\adj{v}_3 = 0.5$};
+  \node[adbar, right=2mm of sub] {$\adj{v}_4 = -1$};
+  \node[adbar, below=2mm of x]   {$0.5 + (-1) = -0.5$};
+  \node[adbar, below=2mm of y]   {$0.5 + 1 = 1.5$};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{The same computation in PyTorch}
+\begin{columns}[T]
+\begin{column}{0.56\textwidth}
+\begin{lstlisting}[style=adpython]
+import torch
+
+x = torch.tensor(3.0, requires_grad=True)
+y = torch.tensor(1.0, requires_grad=True)
+
+a = x + y          # v3, x and y fan out here
+b = x - y          # v4, and here
+C = a / b          # v5
+
+a.retain_grad()    # keep adjoints of
+b.retain_grad()    # interior nodes
+
+C.backward()       # reverse pass, seed 1
+
+print(C.item())        # 2.0
+print(a.grad.item())   # 0.5
+print(b.grad.item())   # -1.0
+print(x.grad.item())   # -0.5
+print(y.grad.item())   # 1.5
+\end{lstlisting}
+\end{column}
+\begin{column}{0.42\textwidth}
+\small
+The printed values match the hand computation line for line.
+
+\medskip
+\texttt{x.grad} holds $\adj{x}$, the sum of the two path
+contributions.
+
+\medskip
+PyTorch frees the adjoints of interior nodes by default.
+Use \texttt{retain\_grad()} to keep them for verification purposes.
+$\adj{v}_3$ and $\adj{v}_4$.
+
+\medskip
+\texttt{backward()} on a scalar seeds the root with $\adj{C} = 1$.
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Inside PyTorch autograd: where the sum happens}
+\begin{columns}[T]
+\begin{column}{0.56\textwidth}
+\begin{lstlisting}[style=adpython]
+f = C.grad_fn
+print(f.name())
+# DivBackward0
+
+print([g.name() for g, _ in f.next_functions])
+# ['AddBackward0', 'SubBackward0']
+
+gx_add = a.grad_fn.next_functions[0][0]
+gx_sub = b.grad_fn.next_functions[0][0]
+print(gx_add.name())       # AccumulateGrad
+print(gx_add is gx_sub)    # True
+\end{lstlisting}
+\end{column}
+\begin{column}{0.42\textwidth}
+\small
+\texttt{grad\_fn} is the recorded graph, read from the root down.
+
+\medskip
+Both \texttt{AddBackward0} and \texttt{SubBackward0} point to the
+\emph{same} \texttt{AccumulateGrad} node for $x$. That shared node is
+the fan-out, and it adds the two incoming gradients into
+\texttt{x.grad}.
+
+\medskip
+Interior nodes with fan-out get an input buffer that adds incoming
+gradients before the node's own backward runs.
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{A different sum: accumulation across calls}
+\begin{columns}[T]
+\begin{column}{0.56\textwidth}
+\begin{lstlisting}[style=adpython]
+x = torch.tensor(3.0, requires_grad=True)
+y = torch.tensor(1.0, requires_grad=True)
+
+C = (x + y) / (x - y)
+C.backward()
+print(x.grad.item())   # -0.5
+
+C = (x + y) / (x - y)
+C.backward()
+print(x.grad.item())   # -1.0, accumulated
+
+x.grad.zero_()         # what zero_grad() does
+\end{lstlisting}
+\end{column}
+\begin{column}{0.42\textwidth}
+\small
+A second \texttt{backward()} adds into \texttt{x.grad}. It does not
+overwrite it.
+
+\medskip
+This sum has nothing to do with the chain rule. It is a design choice
+that lets you accumulate gradients over several mini-batches.
+
+\medskip
+{\color{adAccent}Forgetting \texttt{optimizer.zero\_grad()} gives
+gradients that grow with each step and look plausible.} The chain-rule
+sum happens inside one pass. This one happens between passes.
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Exercise}
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+\small
+\begin{enumerate}
+\item Compute $\partial C / \partial y$ by listing both paths. Confirm
+      it equals $2x/(x-y)^2 = 1.5$.
+\item Change the graph to $C = (x + y)/(z - y)$. What is the fan-out
+      of $x$ now? Does $\partial C/\partial x$ still need a sum?
+\item What happens in the forward and reverse passes at $x = y$?
+\item Predict \texttt{x.grad} after three calls to
+      \texttt{C.backward()} with no zeroing.
+\end{enumerate}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[adroot] (C)   at (0,4.3)  {$C$};
+  \node[adop]   (div) at (0,3.1)  {$/$};
+  \node[adop]   (add) at (-1.3,1.6) {$+$};
+  \node[adop]   (sub) at (1.3,1.6)  {$-$};
+  \node[adleaf] (x)   at (-1.3,0) {$x$};
+  \node[adleaf] (y)   at (0,0)    {$y$};
+  \node[adleaf] (z)   at (1.3,0)  {$z$};
+  \draw[adedge] (x) -- (add);
+  \draw[adedge] (y) -- (add);
+  \draw[adedge] (z) -- (sub);
+  \draw[adedge] (y) -- (sub);
+  \draw[adedge] (add) -- (div);
+  \draw[adedge] (sub) -- (div);
+  \draw[adedge] (div) -- (C);
+  \node[adname, below=2mm of y] {graph for question 2};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+
 \begin{frame}[containsverbatim]{Autograd System} 
 \begin{talert}{Autograd System in PyTorch}
 PyTorch provides automatic differentiation through its autograd system. It means any operations performed on tensors with \texttt{requires\_grad=True} will automatically compute gradients and build a computational graph dynamically. PyTorch tracks gradients automatically during the forward pass and computes them when \texttt{.backward()} is called.
 \end{talert}
 \end{frame}
+
+
 
 \begin{frame}[containsverbatim]{Example 9}
 \begin{minted}

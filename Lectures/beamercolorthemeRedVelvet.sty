@@ -125,4 +125,45 @@
 \setbeamercolor{block body alerted}{bg=cpeyellow}
 
 
+% Palette, close to the burgundy, slate and brass of RedVelvet
+\definecolor{adAccent}{HTML}{8C1C2B}
+\definecolor{adSlate}{HTML}{2F4F4F}
+\definecolor{adBrass}{HTML}{A67C37}
+\definecolor{adMuted}{HTML}{8A8A8A}
+\definecolor{adCodeBg}{HTML}{F6F3EE}
+\definecolor{adComment}{HTML}{6B7B7B}
+
+% Adjoint notation
+\newcommand{\adj}[1]{\bar{#1}}
+
+% TikZ styles for expression graphs
+\tikzset{
+  adop/.style    = {circle, draw=adSlate, line width=0.6pt, fill=white,
+                    minimum size=7.5mm, inner sep=0pt, font=\small},
+  adleaf/.style  = {adop, fill=adSlate!8},
+  adroot/.style  = {adop, draw=adAccent, fill=adAccent!8},
+  adedge/.style  = {-{Stealth[length=2mm]}, draw=adSlate, line width=0.6pt},
+  adhot/.style   = {adedge, draw=adAccent, line width=1.4pt},
+  adcold/.style  = {adedge, draw=adMuted!60},
+  adval/.style   = {font=\scriptsize, text=adBrass},
+  adbar/.style   = {font=\scriptsize, text=adAccent},
+  adname/.style  = {font=\scriptsize, text=adSlate},
+  adlocal/.style = {font=\scriptsize, text=adSlate, fill=white, inner sep=1pt},
+}
+
+% Listings style for PyTorch code
+\lstdefinestyle{adpython}{
+  language=Python,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{adAccent},
+  commentstyle=\color{adComment}\itshape,
+  stringstyle=\color{adBrass},
+  backgroundcolor=\color{adCodeBg},
+  frame=single, rulecolor=\color{adSlate!30},
+  framesep=3pt, xleftmargin=3pt, xrightmargin=3pt,
+  columns=fullflexible, keepspaces=true,
+  showstringspaces=false, breaklines=true,
+  upquote=true,
+}
+
 \usepackage{hyperref}
