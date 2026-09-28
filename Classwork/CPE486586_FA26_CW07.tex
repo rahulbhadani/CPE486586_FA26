@@ -1,0 +1,377 @@
+\documentclass[12pt, xcolor=dvipsnames,svgnames,x11names]{article}
+
+% ============================================================
+% Homework identity
+% ============================================================
+\newcommand{\hw}{Classwork 7}
+\newcommand{\hwtopic}{Simple Linear Regression in One Variable}
+\newcommand{\duedate}{September 30, 2026, 11:59 PM}
+\newcommand{\totalpoints}{50}
+\newcommand{\hwturnin}{cw07}
+
+\usepackage[fleqn]{nccmath}
+
+\input{common}
+
+
+
+\usepackage{design}
+
+\pagestyle{fancy}
+
+\lhead{\footnotesize{\coursenumber, \courseterm}}
+\chead{}
+\rhead{\footnotesize{\emph{\hw}}}
+\lfoot{\footnotesize{\instructorname}}
+\cfoot{\footnotesize{\thepage}}
+\rfoot{\footnotesize{\textit{Last Revised:~\today}}\\ \footnotesize{The University of Alabama in Huntsville}}
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newcommand{\showanswers}{no}
+
+\begin{document}
+
+
+\date{Due: \duedate}
+
+\maketitle
+
+
+\section{Simple Linear Regression}
+Consider the dataset that exhibits linear relationship between Units Sold in 1000 (predictor variable $x$), and profit in percentage ($y$):
+
+\begin{tabular}{|c|c|}
+\hline
+\textbf{UnitSold\_in\_1000 $x_i$} & \textbf{Profits\_Pct $y_i$} \\
+\hline
+0.54 & 3.69 \\
+\hline
+0.72 & 4.58 \\
+\hline
+0.6 & 4.03 \\
+\hline
+0.54 & 3.67 \\
+\hline
+0.42 & 3.40 \\
+\hline
+0.64 & 4.03 \\
+\hline
+0.43 & 3.76 \\
+\hline
+0.89 & 4.61 \\
+\hline
+0.96 & 4.98 \\
+\hline
+0.38 & 2.89 \\
+\hline
+\end{tabular}
+
+$n = 10$.
+
+\bigskip
+
+\includegraphics[width=0.65\textwidth]{../Lectures/figures/unitsold_profitsdata.pdf}
+
+\newpage
+
+\textbf{Calculate the following quantity ($\sum_{i=1}^{10}$ is shorthanded as $\sum$) (10 points):}
+
+\begin{multicols}{3}
+\begin{enumerate}
+ \item \begin{equation*}
+    \sum x_i = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+    \end{equation*}
+
+\item \begin{equation*}
+    \sum y_i = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+    \end{equation*}
+
+    \item \begin{equation*}
+    \xbar = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+    \end{equation*}
+
+\item \begin{equation*}
+    \ybar = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+    \end{equation*}
+
+\item \begin{equation*}
+     \sum (x_i -\xbar) = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+    \end{equation*}
+    
+\item \begin{equation*}
+     \sum (y_i -\ybar) = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+    \end{equation*}
+
+\item \begin{equation*}
+     \sum (x_i -\xbar)^2 = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+    \end{equation*}
+
+\item \begin{equation*}
+     \sum (x_i y_i) = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+    \end{equation*}
+
+\item \begin{equation*}
+     \sum x_i^2 = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+    \end{equation*}
+
+\item \begin{equation*}
+     \sum y_i^2 = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+    \end{equation*}
+
+\item \begin{equation*}
+     \sum (x_i - \xbar) (y_i - \ybar) = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+    \end{equation*}
+        
+\end{enumerate}
+\end{multicols}
+
+In an ideal scenario, the data was obtained from a linear model $Y = Xw_1 + w_0$. The given data comes follows the $y_i = x_i w_1 + w_0 + \epsilon_i$ where $\epsilon_i$ is the error introduced by data gathering process such that $\epsilon_i \sim \Ncal(\mu= 0, \sigma=0.3)$. 
+
+We will fit our data into the linear model $y_i=x_i w_1 + w_0$ with the hope of minimizing the cost function (or error):
+
+\begin{equation}
+    Q = \cfrac{1}{n}\sum_i (y_i -\yhat)^2
+\end{equation}
+where $\yhat = x_i \what_1 + \what_0$.
+
+The least-square solution gives the normal equation by solving:
+
+\begin{equation}
+    \begin{aligned}
+    \sum y_i & = n\what_0 + \what_1 \sum x_i\\
+    \sum x_i y_i & = \what_0 \sum x_i + \what_1 \sum x_i^2
+    \end{aligned}
+\end{equation}
+
+which gives 
+\begin{equation}
+    \what_1 = \cfrac{\sum_i (x_i - \xbar)(y_i - \ybar)}{\sum_i (x_i  - \xbar)^2} = \cfrac{\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad}{\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad} = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}}
+\end{equation}
+
+\textbf{(4 Points)}
+
+and
+
+\begin{equation}
+    \what_0 = \ybar - \what_1 \xbar = \vcenter{\hbox{\begin{tikzpicture}
+    \draw (0,0) rectangle (75pt,75pt);
+    \end{tikzpicture}}} 
+\end{equation}
+\textbf{~~~(2 Points)}
+
+
+
+Alternatively, we can take the derivative of the cost function which can be re-written as
+\begin{equation}
+    Q = \cfrac{1}{n} \sum ( y_i - (w_1x_i + w_0))^2
+\end{equation}
+
+Taking the partial derivative with respect to $w_1$ and $w_0$:
+
+\begin{figure}[h]
+\fbox{
+\begin{minipage}{\linewidth}
+\vspace{20pt}
+\begin{fleqn}
+\begin{equation}
+\cfrac{\partial Q}{\partial w_1} = 
+\end{equation}
+\end{fleqn}
+\vspace{150pt}
+\end{minipage}
+}
+\textbf{~~~(5 Points)}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h]
+\fbox{
+\begin{minipage}{\linewidth}
+\vspace{20pt}
+\begin{fleqn}
+\begin{equation}
+\cfrac{\partial Q}{\partial w_0} = 
+\end{equation}
+\end{fleqn}
+\vspace{150pt}
+\end{minipage}
+}
+\textbf{~~~(5 Points)}
+
+\end{figure}
+
+
+
+Setting above to 0 gives the following set of equations:
+
+\begin{equation}
+    \begin{aligned}
+        w_1 & = \frac{n(\sum_{i=1}^{n} x_i y_i) - (\sum_{i=1}^{n} x_i)(\sum_{i=1}^{n} y_i)}{n(\sum_{i=1}^{n} x_i^2) - (\sum_{i=1}^{n} x_i)^2}
+        \\
+        w_0 & = \frac{1}{n}(\sum_{i=1}^{n} y_i) - w_1 \frac{1}{n}(\sum_{i=1}^{n} x_i)
+    \end{aligned}
+\end{equation}
+
+Putting the value in the above equations should give an estimated $\what_0$ and $\what_1$. Write down what you got in that Equation.
+
+
+\begin{equation}
+    \begin{aligned}
+       \what_1 = 
+    \end{aligned}
+\end{equation}
+
+\vspace{100pt}
+
+\begin{equation}
+    \begin{aligned}
+       \what_0 = 
+    \end{aligned}
+\end{equation}
+
+
+\vspace{100pt}
+\textbf{~~~(5 Points)}
+
+
+Using $\what_0$ and $\what_1$, we can obtain $\yhat_i$, the estimated response. Using estimated response and actual response, we can calculate Sum of Square Error (SSE) and Total Square Sum (SSTO) as:
+
+\begin{equation}
+\begin{aligned}
+        \textrm{SSE} & = \sum (y_i - \yhat_i)^2 = \\
+        \textrm{MSE} & = \cfrac{\textrm{SSE}}{n - 2} = \\
+        \textrm{SSTO} & = \sum (y_i - \ybar)^2 = 
+\end{aligned}
+\end{equation}
+\textbf{~~~(2 Points)}
+
+Calculate the goodness of fit using the coefficient of determination $R^2$:
+
+
+\begin{equation}
+    R^2 = 1 - \cfrac{\textrm{SSE}}{\textrm{SSTO}} = 
+\end{equation}
+\textbf{~~~(2 Points)}
+
+
+\begin{figure}[h]
+\fbox{
+\begin{minipage}{\linewidth}
+\begin{fleqn}
+\textbf{Based on the value of $R^2$ how good fit is the linear model on the given dataset?
+}
+\end{fleqn}
+\vspace{100pt}
+
+\end{minipage}
+}
+\textbf{~~~(2 Points)}
+\end{figure}
+
+
+Next, we calculate the standard deviation on the estimated coefficients or weight ($\what_1$, and $\what_0$).
+
+\begin{figure}[h]
+\fbox{
+\begin{minipage}{\linewidth}
+\vspace{20pt}
+\begin{fleqn}
+\begin{equation}
+s^2[\what_1] = \cfrac{\textrm{MSE}}{\sum (x_i - \xbar)^2} = 
+\end{equation}
+\end{fleqn}
+\vspace{100pt}
+\end{minipage}
+}
+\textbf{~~~(2 Points)}
+\end{figure}
+
+
+\begin{figure}[h]
+\fbox{
+\begin{minipage}{\linewidth}
+\vspace{20pt}
+\begin{fleqn}
+\begin{equation}
+s^2[\what_0] = \textrm{MSE}\bigg( \cfrac{1}{n} + \cfrac{\xbar^2}{\sum (x_i - \xbar)^2} \bigg)= 
+\end{equation}
+\end{fleqn}
+\vspace{100pt}
+\end{minipage}
+}
+\textbf{~~~(2 Points)}
+\end{figure}
+
+Now, we need to calculate the 95\% confidence interval on the estimated $\what_1$ and $\what_0$ for which $\alpha = 0.05$ (use $t(0.975, 8) = 2.306$):
+
+
+\begin{figure}[h]
+\fbox{
+\begin{minipage}{\linewidth}
+\vspace{20pt}
+\begin{fleqn}
+\begin{equation}
+\what_1 \pm t(1 - 0.05/2, 10-2)s[\what_1]
+\end{equation}
+\end{fleqn}
+\vspace{100pt}
+\end{minipage}
+}
+\textbf{~~~(2 Points)}
+\end{figure}
+
+
+
+\begin{figure}[h]
+\fbox{
+\begin{minipage}{\linewidth}
+\vspace{20pt}
+\begin{fleqn}
+\begin{equation}
+\what_0 \pm t(1 - 0.05/2, 10-2)s[\what_0]
+\end{equation}
+\end{fleqn}
+\vspace{100pt}
+\end{minipage}
+}
+\textbf{~~~(2 Points)}
+\end{figure}
+
+
+Now, consider a new data point $x_{new} = 0.47$ Units Sold (in 1000). Based on the linear regression model that we developed, what is the estimated/predicted profit percent for the given quantity \textbf{~~~(5 Points)}?
+
+\end{document}

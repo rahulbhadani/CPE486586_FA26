@@ -1,0 +1,297 @@
+% Keep the homework in a clean sans-serif face.
+\renewcommand{\familydefault}{\sfdefault}
+
+% Needed only for the heading formatter below.
+\usepackage{titlesec}
+
+
+
+% ============================================================
+% Geometric palette
+% ============================================================
+\definecolor{geomSlate}{HTML}{404B69}
+\definecolor{geomNavy}{HTML}{283149}
+\definecolor{geomCoral}{HTML}{F73859}
+\definecolor{geomCream}{HTML}{F3ECC8}
+
+\colorlet{geomPaleSlate}{geomSlate!8!white}
+\colorlet{geomPaleCoral}{geomCoral!7!white}
+\colorlet{geomRule}{geomSlate!35!white}
+
+% ============================================================
+% Title metadata
+% ============================================================
+\title{\hwtopic}
+\author{Instructor: \instructorname}
+\date{Due: \duedate}
+
+% ============================================================
+% Geometric title block
+% ============================================================
+\makeatletter
+\renewcommand{\maketitle}{%
+    \begin{center}
+    \begin{tcolorbox}[
+        enhanced,
+        width=\textwidth,
+        colback=white,
+        colframe=geomNavy,
+        boxrule=0.8pt,
+        arc=2pt,
+        outer arc=2pt,
+        left=0pt,
+        right=0pt,
+        top=0pt,
+        bottom=0pt,
+        boxsep=0pt,
+        before skip=0pt,
+        after skip=0pt,
+        overlay={
+            % Top-left structural cap.
+            \fill[geomSlate]
+                (frame.north west)
+                rectangle
+                ([xshift=1.40cm,yshift=-0.22cm]frame.north west);
+
+            % Top-right accent.
+            \fill[geomCoral]
+                ([xshift=-2.20cm]frame.north east)
+                rectangle
+                ([yshift=-0.22cm]frame.north east);
+
+            % Lower-right warm block.
+            \fill[geomCream]
+                ([xshift=-2.30cm]frame.south east)
+                rectangle
+                (frame.south east);
+
+            % Corner triangle.
+            \fill[geomCoral]
+                ([xshift=-0.70cm]frame.south east)
+                -- (frame.south east)
+                -- ([yshift=0.70cm]frame.south east)
+                -- cycle;
+        }
+    ]
+
+        % Main title field.
+        \begin{tcolorbox}[
+            enhanced,
+            colback=geomNavy,
+            colframe=geomNavy,
+            boxrule=0pt,
+            sharp corners,
+            left=1.65em,
+            right=1.65em,
+            top=1.15em,
+            bottom=1.20em,
+            overlay={
+                \fill[geomCoral]
+                    (frame.south west)
+                    rectangle
+                    ([xshift=0.20cm]frame.north west);
+
+                \fill[geomCream]
+                    ([xshift=-0.62cm,yshift=-0.62cm]frame.north east)
+                    rectangle
+                    ([xshift=-0.25cm,yshift=-0.25cm]frame.north east);
+
+                \fill[geomSlate]
+                    ([xshift=-2.25cm,yshift=0.00cm]frame.south east)
+                    rectangle
+                    ([xshift=-0.90cm,yshift=0.15cm]frame.south east);
+            }
+        ]
+            \centering
+
+            {\small\bfseries\color{geomCream}
+                \MakeUppercase{\hw}\par}
+
+            \vspace{0.10em}
+
+            {\large\bfseries\color{white}
+                \@title\par}
+
+            \vspace{0.25em}
+
+            {\normalsize\bfseries\color{geomCream}
+                \coursenumber\par}
+        \end{tcolorbox}
+
+        % Metadata field.
+        \begin{tcolorbox}[
+            enhanced,
+            colback=white,
+            colframe=white,
+            boxrule=0pt,
+            sharp corners,
+            left=1.55em,
+            right=1.55em,
+            top=0.90em,
+            bottom=0.82em
+        ]
+            \begin{minipage}[t]{0.5\textwidth}
+                \raggedright
+                {\small\bfseries\color{geomSlate}\@author}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{0.45\textwidth}
+                \raggedleft
+                {\small\bfseries\color{geomNavy}\@date}
+                \\
+                {\small\color{geomCoral}\totalpoints\ points}
+            \end{minipage}
+
+            \vspace{0.20em}
+
+            \noindent
+            {\color{geomCoral}\rule{0.95in}{2.4pt}}%
+            {\color{geomSlate}\rule{\dimexpr\linewidth-0.95in\relax}{0.7pt}}
+        \end{tcolorbox}
+
+    \end{tcolorbox}
+    \end{center}
+
+    \vspace{0.35em}
+}
+\makeatother
+
+% ============================================================
+% Section hierarchy
+% ============================================================
+% common.tex uses sectsty. titlesec below becomes the final formatter.
+\titleformat{\section}[hang]
+  {\Large\bfseries\color{geomNavy}}
+  {\textcolor{geomCoral}{\thesection}}
+  {0.45em}
+  {\raisebox{-0.15ex}{\color{geomCoral}\rule{5pt}{1.12em}}\hspace{0.55em}}
+  [\vspace{0.16em}%
+   {\color{geomCream}\titlerule[3.2pt]}%
+   \vspace{-0.31em}%
+   {\color{geomSlate}\titlerule[0.55pt]}]
+
+\titlespacing*{\section}{0pt}{1.35em}{0.65em}
+
+\titleformat{\subsection}[hang]
+  {\large\bfseries\color{geomSlate}}
+  {}
+  {0pt}
+  {\raisebox{0.08ex}{\color{geomCoral}\rule{0.52em}{0.52em}}\hspace{0.48em}}
+
+\titlespacing*{\subsection}{0pt}{1.05em}{0.45em}
+
+\titleformat{\subsubsection}[hang]
+  {\normalsize\bfseries\color{geomNavy}}
+  {}
+  {0pt}
+  {\textcolor{geomCoral}{\rule{0.9em}{1.2pt}}\hspace{0.45em}}
+
+\titlespacing*{\subsubsection}{0pt}{0.9em}{0.35em}
+
+% ============================================================
+% Running header and footer
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+
+\lhead{\footnotesize\color{geomSlate}{\coursenumber, \courseterm}}
+\chead{}
+\rhead{\footnotesize\bfseries\color{geomCoral}{\hw}}
+
+\lfoot{\footnotesize\color{geomSlate}{\instructorname}}
+\cfoot{\footnotesize\bfseries\color{geomNavy}{\thepage}}
+\rfoot{%
+    \footnotesize\color{geomSlate}{%
+        \textit{Last Revised: \today}\\[-1pt]
+        The University of Alabama in Huntsville
+    }%
+}
+
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Thin geometric header line.
+\renewcommand{\headrule}{%
+    \hbox to\headwidth{%
+        {\color{geomCoral}\leaders\hrule height 1.2pt\hskip 0.72in}%
+        {\color{geomSlate}\leaders\hrule height 0.35pt\hfill}%
+    }%
+}
+
+% Thin footer line with reversed emphasis.
+\renewcommand{\footrule}{%
+    \hbox to\headwidth{%
+        {\color{geomSlate}\leaders\hrule height 0.35pt\hfill}%
+        {\color{geomCream}\leaders\hrule height 2.2pt\hskip 0.90in}%
+    }%
+    \vskip 0.5pt
+}
+
+\setlength{\headheight}{23pt}
+\setlength{\footskip}{34pt}
+
+% ============================================================
+% Homework content helpers
+% ============================================================
+\newcommand{\minipagewidth}{0.8\columnwidth}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newenvironment{multiequation}[1][]{%
+    \begin{equation}
+    \begin{aligned}
+    \if\relax\detokenize{#1}\relax\else\label{#1}\fi
+}{%
+    \end{aligned}
+    \end{equation}
+}
+
+% Problem card. Example:
+% \begin{problem}{Problem 1 \hfill \textcolor{geomCoral}{[20 points]}}
+% ...
+% \end{problem}
+\newtcolorbox{problem}[2][]{
+    enhanced,
+    breakable,
+    colback=white,
+    colframe=geomSlate!30!white,
+    boxrule=0.55pt,
+    arc=1.5pt,
+    left=1.05em,
+    right=1.05em,
+    top=1.15em,
+    bottom=0.95em,
+    before skip=0.95em,
+    after skip=1.0em,
+    borderline west={3pt}{0pt}{geomCoral},
+    title={#2},
+    coltitle=geomNavy,
+    fonttitle=\large\bfseries,
+    attach boxed title to top left={xshift=0.80em,yshift=-0.56em},
+    boxed title style={
+        colback=geomCream,
+        colframe=geomCream,
+        boxrule=0pt,
+        arc=1pt,
+        left=0.65em,
+        right=0.65em,
+        top=0.26em,
+        bottom=0.26em
+    },
+    #1
+}
+
+% Small instruction or note card.
+\newtcolorbox{notebox}[1][]{
+    enhanced,
+    breakable,
+    colback=geomPaleSlate,
+    colframe=geomSlate!35!white,
+    boxrule=0.5pt,
+    arc=1.5pt,
+    borderline west={3pt}{0pt}{geomSlate},
+    left=0.9em,
+    right=0.9em,
+    top=0.7em,
+    bottom=0.7em,
+    #1
+}
