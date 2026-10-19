@@ -1,0 +1,554 @@
+\documentclass[12pt, xcolor=dvipsnames,svgnames,x11names]{article}
+
+\input{common}
+
+\renewcommand{\familydefault}{\rmdefault}   % Palatino (loaded in common.tex)
+\usetikzlibrary{positioning}
+
+% Redefine \maketitle to include tcolorbox
+% Palette: hdrplum (2E0014), hdrcoral (E17564), hdrslate (2F4F4F)
+\makeatletter
+\newcommand{\hdrrule}{{\color{hdrcoral}\rule{4.5em}{1.1pt}}}
+\renewcommand{\maketitle}{%
+      \begin{center}
+         \begin{tcolorbox}[
+               enhanced,
+               colback=white,
+               colframe=hdrslate,
+               boxrule=0.8pt,
+               arc=4pt,
+               left=0pt,
+               right=0pt,
+               top=0pt,
+               bottom=0pt,
+               drop shadow={hdrslate!35!white},
+         ]
+               % Header band: deep plum with a coral baseline
+               \begin{tcolorbox}[
+                  enhanced,
+                  colback=hdrplum,
+                  colframe=hdrplum,
+                  boxrule=0pt,
+                  arc=4pt,
+                  sharp corners=south,
+                  left=2em,
+                  right=2em,
+                  top=1.1em,
+                  bottom=1.1em,
+                  borderline south={2.2pt}{0pt}{hdrcoral},
+               ]
+                  \centering
+                  % Palatino has no bold small caps, so the title stays at medium
+                  % weight and gains presence from size and the dark band instead.
+                  {\LARGE\color{white}\linespread{1.25}\selectfont\@title}
+               \end{tcolorbox}
+
+               % Body: author, coral divider, then the due information
+               \vspace{1.1em}
+               \centering
+               {\large\color{hdrslate}\@author}\\[0.7em]
+               \hdrrule\\[0.7em]
+               {\normalsize\color{hdrplum}\@date}
+               \vspace{1.1em}
+         \end{tcolorbox}
+      \end{center}
+      \vspace{1.5em}
+}
+\makeatother
+
+
+
+
+\newcommand{\hw}{Homework 3:\\\normalsize Optimization and Linear Regression}
+\newcommand{\duedate}{October 11, 2026, 11:59 PM}
+
+\newenvironment{multiequation}[1][]{%
+\begin{equation}%
+   \begin{aligned}%
+   \ifx#1\@empty\else\label{#1}\fi%
+}{%
+   \end{aligned}%
+\end{equation}%
+}
+\pagestyle{fancy}
+
+\lhead{\footnotesize{\coursenumber, \courseterm}, \footnotesize{UAH}}
+\chead{}
+\rhead{\footnotesize{\emph{\hw}}}
+\lfoot{\footnotesize{\instructorname}}
+\cfoot{\footnotesize{\thepage}}
+\rfoot{\footnotesize{\textit{Last Revised:~\today}}}
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+\newcommand{\minipagewidth}{0.8\columnwidth}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+
+
+\begin{document}
+
+
+\title{\textsc{\hw\\
+\coursenumber}}
+\author{Instructor: \instructorname}
+\date{Due: \duedate\\ 125 Points}
+
+\maketitle
+
+\setlength{\unitlength}{1in}
+You are allowed to use a generative model-based AI tool for your assignment. However, you must submit an accompanying reflection report detailing how you used the AI tool, the specific query you made, and how it improved your understanding of the subject. You are also required to submit screenshots of your conversation with any large language model (LLM) or equivalent conversational AI, clearly showing the prompts and your login avatar. Some conversational AIs provide a way to share a conversation link, and such a link is desirable for authenticity. Failure to do so may result in actions taken in compliance with the plagiarism policy.
+
+Additionally, you must include your thoughts on how you would approach the assignment if such a tool were not available. Failure to provide a reflection report for every assignment where an AI tool is used may result in a penalty, and subsequent actions will be taken in line with the plagiarism policy.
+
+\subsection*{Submission instruction:}
+You may either complete your entire homework on Python Notebook  and submit a Google Colab link or you may choose a combination of a pdf and Google Colab Notebook. However, you must provide \textbf{publicly accessible} Google Colab URL on Canvas.
+
+For .pdf on Canvas, follow the format  \texttt{CPE486586-LastFirst-HW-XX}. For example, if your name is Sam Wells, your file name should be \texttt{CPE486586-WellsSam-HW-XX.pdf}.
+
+Your submission must contain your name and UAH Charger ID or your UAH email address.  Please number your pages as well.
+
+\textbf{Please write down your unique keyword corresponding to your package and your Github account URL. Do not provide a link to your Google Colab notebook. Upload your Google colab notebook to your repo in a new folder called \textbf{HWNotebooks}. Provide your GitHub commit hash. Your submitted notebook must be fully executed with all cells outputs. Please make sure there are no error in your submitted notebook.}
+
+\vskip 1em
+\hrule
+\vskip 1em
+
+
+% {\LARGE \color{stormblue} \textbf{Python Practice-I}}
+
+
+
+{{\LARGE \textbf{Theory}}}
+
+\section{Automatic Differentiation and Expression Graph (10 Points)}
+
+Consider a function $f(w, x, y, z) = wx + y^2 z$. Draw the expression graph corresponding to the given function and demonstrate how would you evaluate $\cfrac{\partial f}{\partial w}$ for $w=1$, $ x= 2$, $ y = 3$, and $z = 4$.
+
+
+\begin{answerbox}
+\begin{minipage}[c]{0.48\textwidth}
+Let:
+\begin{equation}
+\begin{aligned}
+w_1 &= w = 1 & w_2 &= x = 2\\
+w_3 &= y = 3 & w_4 &= z = 4\\
+w_5 &= w_1 w_2 = 2 & w_6 &= w_3^2 = 9\\
+w_7 &= w_6 w_4 = 36 & w_8 &= w_5 + w_7 = 38\\
+f &= w_8 = 38
+\end{aligned}
+\end{equation}
+\end{minipage}
+\hfill
+\begin{minipage}[c]{0.48\textwidth}
+\centering
+\begin{tikzpicture}[
+  n/.style  = {circle, draw, minimum size=8mm, inner sep=1pt},
+  op/.style = {n, text=orange!85!black},
+  tag/.style = {font=\scriptsize, text=gray},
+  level distance = 13mm,
+  level 2/.style = {sibling distance=44mm},
+  level 3/.style = {sibling distance=22mm}
+]
+\node[n] {$f$}
+  child { node[op, label={[tag]right:$w_8$}] {$+$}
+    child { node[op, label={[tag]left:$w_5$}] {$\times$}
+      child { node[n, label={[tag]below:$w_1$}] {$w$} }
+      child { node[n, label={[tag]below:$w_2$}] {$x$} }
+    }
+    child { node[op, label={[tag]right:$w_7$}] {$\times$}
+      child { node[op, label={[tag]left:$w_6$}] {$(\cdot)^2$}
+        child { node[n, label={[tag]below:$w_3$}] {$y$} }
+      }
+      child { node[n, label={[tag]below:$w_4$}] {$z$} }
+    }
+  };
+\end{tikzpicture}
+\end{minipage}
+
+\bigskip
+
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+\begin{equation}
+\begin{aligned}
+\frac{\partial w_5}{\partial w_1} &= \frac{\partial (w_1 \cdot w_2)}{\partial w_1} = w_2\\[4pt]
+\frac{\partial w_5}{\partial w_2} &= \frac{\partial (w_1 \cdot w_2)}{\partial w_2} = w_1\\[4pt]
+\frac{\partial w_6}{\partial w_3} &= \frac{\partial (w_3^2)}{\partial w_3} = 2w_3\\[4pt]
+\frac{\partial w_7}{\partial w_6} &= \frac{\partial (w_6 \cdot w_4)}{\partial w_6} = w_4
+\end{aligned}
+\end{equation}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\begin{equation}
+\begin{aligned}
+\frac{\partial w_7}{\partial w_4} &= \frac{\partial (w_6 \cdot w_4)}{\partial w_4} = w_6\\[4pt]
+\frac{\partial w_8}{\partial w_5} &= \frac{\partial (w_5 + w_7)}{\partial w_5} = 1\\[4pt]
+\frac{\partial w_8}{\partial w_7} &= \frac{\partial (w_5 + w_7)}{\partial w_7} = 1\\[4pt]
+\frac{\partial f}{\partial w_8} &= 1
+\end{aligned}
+\end{equation}
+\end{minipage}
+
+\bigskip
+
+\noindent Apply chain rule:
+\begin{equation}
+\begin{aligned}
+\frac{\partial f}{\partial w_1}
+  &= \frac{\partial f}{\partial w_8} \times \frac{\partial w_8}{\partial w_5} \times \frac{\partial w_5}{\partial w_1}\\[4pt]
+  &= 1 \times 1 \times w_2\\[4pt]
+  &= 1 \times 1 \times 2 = 2
+\end{aligned}
+\end{equation}
+\end{answerbox}
+
+\section{Unconstrained Optimization (5 Points)}
+
+\begin{enumerate}
+\item Minimize $f(x) = x^2 - 4x + 4$, determine the critical point, and repor the minimum value of the function. \hfill \textbf{(5 Points)}
+
+\item Optimize $f(x) = x^3 - 3x^2$. Find all the critical points possible. Which one of them are local minima and local maxima? What is the local minimum and maxmium values of $f(x)$? \hfill \textbf{(10 Points)}
+
+
+\item Consider $f(x, y) = x^2 - y^2$. Compute its gradient $\nabla f$ and associated critical point. Is this critical point a maximum, a minimum, or a saddle point? \hfill \textbf{(5 Points)}
+
+\end{enumerate}
+
+\begin{answerbox}
+
+\begin{enumerate}
+\item
+\begin{align*}
+f(x) & = x^2 - 4x + 4\\
+\frac{\partial f(x)}{\partial x} & = 2x - 4 = 0\\
+x & = 2\\
+\frac{\partial^2 f(x)}{\partial x^2} & = 2 > 0, \quad \text{critical point is a local minimum}
+\end{align*}
+
+Minimum value is $f(2) = 2^2 - 4\cdot 2  + 4 = 4 - 8 + 4  = 0$.
+
+
+\item 
+
+\begin{align*}
+\frac{\partial f(x)}{\partial x} & = 3x^2 - 6x  = 0\\
+3x(x-2) & = 0 \Rightarrow x= 2 , x = 0\\
+\frac{\partial^2 f(x)}{\partial x^2} & = 6x -6 \\
+6x - 6 \bigg|_{x = 0} & = -6 <0, \quad \quad \text{critical point is a local maximum} \\
+6x - 6 \bigg|_{x = 2} & = 6  > 0 \quad \quad \text{critical point is a local minimum}\\
+f(0) & = 0\\
+f(2) & = 8 - 3\cdot 4 = -4
+\end{align*}
+
+\item 
+
+\begin{align*}
+\text{Given } f(x, y) &= x^2 - y^2 \\
+\text{The gradient is } \\
+\nabla f &= \left( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y} \right) \\
+\frac{\partial f}{\partial x} &= 2x \\
+\frac{\partial f}{\partial y} &= -2y \\
+\nabla f &= (2x, -2y) \\
+\text{Set } \nabla f = (0, 0) \text{ to find critical points:} \\
+2x &= 0 \Rightarrow x = 0 \\
+-2y &= 0 \Rightarrow y = 0 \\
+\text{Critical point: } & (0, 0)
+\end{align*}
+
+\begin{align*}
+\text{Second derivatives:} \\
+\frac{\partial^2 f}{\partial x^2} &= 2 \\
+\frac{\partial^2 f}{\partial y^2} &= -2 \\
+\frac{\partial^2 f}{\partial x \partial y} &= 0 \\
+\text{Hessian matrix: } H &= \begin{bmatrix}
+2 & 0 \\
+0 & -2
+\end{bmatrix} \\
+\det(H) &= (2)(-2) - (0)(0) = -4 \\
+\end{align*}
+
+$$\text{Since } \det(H) < 0, \text{ the critical point } (0, 0) \text{ is a saddle point.}$$
+\end{enumerate}
+\end{answerbox}
+
+\section{Constrained Optimization using Lagrange Multiplier (10 Points)}
+Using method of Lagrange mulitplier, minimize $f(x, y, z) = x^2 + y^2 + z^2$ subject to $x + 2y + z = 6$.
+
+\begin{enumerate}
+\item Set up the Lagrangian.
+\item Derive the system of equations.
+\item Solve for critical points.
+\item Classify extrema.
+\item Explain the role of the constraint.
+\end{enumerate}
+
+\begin{answerbox}
+
+\subsection*{Step 1: Set up the Lagrangian}
+We minimize 
+\begin{align*}
+f(x, y, z) = x^2 + y^2 + z^2
+\end{align*}
+subject to the constraint 
+\begin{align*}
+g(x, y, z) = x + 2y + z = 6.
+\end{align*}
+The Lagrangian is:
+\begin{align*}
+\mathcal{L}(x, y, z, \lambda) = x^2 + y^2 + z^2 - \lambda(x + 2y + z - 6)
+\end{align*}
+
+\subsection*{Step 2: Derive the system of equations}
+\begin{align*}
+\frac{\partial \mathcal{L}}{\partial x} &= 2x - \lambda = 0  \\
+\frac{\partial \mathcal{L}}{\partial y} &= 2y - 2\lambda = 0 \\
+\frac{\partial \mathcal{L}}{\partial z} &= 2z - \lambda = 0  \\
+\end{align*}
+
+\subsection*{Step 3: Solve for critical points}
+From (1): $x = \frac{\lambda}{2}$ \\
+From (2): $y = \lambda$ \\
+From (3): $z = \frac{\lambda}{2}$ \\
+Substitute into (4):
+\begin{align*}
+\frac{\lambda}{2} + 2\lambda + \frac{\lambda}{2} = 6 \Rightarrow 3\lambda = 6 \Rightarrow \lambda = 2
+\end{align*}
+Thus:
+\begin{align*}
+x = 1, \quad y = 2, \quad z = 1
+\end{align*}
+Critical point: $(1, 2, 1)$
+
+\subsection*{Step 4: Classify extrema}
+The function $f(x, y, z) = x^2 + y^2 + z^2$ is convex (positive definite quadratic form) and the constraint is linear. Therefore, the critical point $(1, 2, 1)$ is a \textbf{minimum}. \\
+Minimum value:
+\begin{align*}
+f(1, 2, 1) = 1^2 + 2^2 + 1^2 = 6
+\end{align*}
+
+\subsection*{Step 5: Role of the constraint}
+The constraint $x + 2y + z = 6$ defines a plane in $\mathbb{R}^3$. Minimizing $f(x, y, z)$ subject to this constraint finds the point on the plane closest to the origin (since $f$ represents squared distance from origin). The Lagrange multiplier method gives the projection of the origin onto this plane.
+\end{answerbox}
+
+\section{Optimizing a Function using Stochastic Gradient Descent (5 Points)}
+Use the Stochastic Gradient Descent technique to calculate the optimal value of 
+$w_1$ for the cost function shown in Equation (1). Use a learning rate 
+$\eta = 0.1$ , and an initial value 
+$w_1^{(0)} = 2.0$.
+Write down the updated value of 
+$w_1$ for 5 iterations using the formula for gradient descent. \newline
+This question is \textbf{analytical}, no code is required.
+\begin{equation}
+    J(w_1) = (w_1-5)^4 + (w_1-3)^2 +  4
+\end{equation}
+
+How does it compare with optimizing $J$ using partial differentiation method?
+\begin{answerbox}
+\noindent The cost function is
+$$J(w_1) = (w_1 - 5)^4 + (w_1 - 3)^2 + 4$$
+with gradient
+$$\frac{\partial J}{\partial w_1} = 4(w_1 - 5)^3 + 2(w_1 - 3).$$
+Using stochastic gradient descent (SGD) with learning rate $\eta = 0.1$ and initial value $w_1^{(0)} = 2.0$, the update rule is:
+$$w_1^{(t+1)} = w_1^{(t)} - \eta \cdot \frac{\partial J}{\partial w_1}
+            = w_1^{(t)} - 0.4\,(w_1^{(t)} - 5)^3 - 0.2\,(w_1^{(t)} - 3).$$
+
+\noindent Iterations:
+$$\begin{aligned}
+w_1^{(0)} &= 2.0 \\[4pt]
+\left.\frac{\partial J}{\partial w_1}\right|_{2.0} &= 4(-3)^3 + 2(-1) = -110
+  &&\Rightarrow\; w_1^{(1)} = 2.0 - 0.1(-110) = 13.0 \\[4pt]
+\left.\frac{\partial J}{\partial w_1}\right|_{13.0} &= 4(8)^3 + 2(10) = 2068
+  &&\Rightarrow\; w_1^{(2)} = 13.0 - 0.1(2068) = -193.8 \\[4pt]
+\left.\frac{\partial J}{\partial w_1}\right|_{-193.8} &= 4(-198.8)^3 + 2(-196.8) \approx -3.1428 \times 10^{7}
+  &&\Rightarrow\; w_1^{(3)} \approx 3.1426 \times 10^{6} \\[4pt]
+\left.\frac{\partial J}{\partial w_1}\right|_{w_1^{(3)}} &\approx 4(3.1426 \times 10^{6})^3 \approx 1.2414 \times 10^{20}
+  &&\Rightarrow\; w_1^{(4)} \approx -1.2414 \times 10^{19} \\[4pt]
+\left.\frac{\partial J}{\partial w_1}\right|_{w_1^{(4)}} &\approx 4(-1.2414 \times 10^{19})^3 \approx -7.653 \times 10^{57}
+  &&\Rightarrow\; w_1^{(5)} \approx 7.653 \times 10^{56}
+\end{aligned}$$
+
+\noindent The iterates oscillate in sign and grow without bound, so SGD \textbf{diverges} for $\eta = 0.1$.
+The cause is the curvature
+$$\frac{\partial^2 J}{\partial w_1^2} = 12(w_1 - 5)^2 + 2,$$
+which equals $110$ at the starting point. A gradient step is stable only when $\eta < 2 / J''(w_1)$, which here requires $\eta < 2/110 \approx 0.018$.
+The first step overshoots to $w_1 = 13$, where the curvature is larger still ($J'' = 770$), and each later overshoot is worse than the one before.
+A smaller learning rate such as $\eta = 0.01$ would converge, with the first step landing at $w_1^{(1)} = 3.1$.
+
+\bigskip
+\noindent \textbf{Comparison with Partial Differentiation:} \\
+Setting the gradient to zero and substituting $u = w_1 - 5$:
+$$4u^3 + 2(u + 2) = 0 \;\implies\; 2u^3 + u + 2 = 0.$$
+The cubic has derivative $6u^2 + 1 > 0$, so it has exactly one real root. Cardano's formula gives
+$$u = \sqrt[3]{-\tfrac{1}{2} + \sqrt{\tfrac{55}{216}}} + \sqrt[3]{-\tfrac{1}{2} - \sqrt{\tfrac{55}{216}}} \approx -0.8351,$$
+so
+$$w_1^{*} \approx 4.1649, \qquad J(w_1^{*}) \approx 5.8433.$$
+Since $J''(w_1) > 0$ for all $w_1$, $J$ is strictly convex and this stationary point is the unique global minimum.
+
+\noindent Partial differentiation finds the optimum directly, though it requires solving a cubic, which has no simple closed form in practice.
+SGD avoids solving the equation, but its success depends on the learning rate.
+Convexity guarantees a single minimum, yet it does not guarantee convergence: with $\eta = 0.1$ the method moves away from $w_1^{*} \approx 4.1649$ instead of towards it.
+In the quadratic example the curvature was constant, so one fixed $\eta$ worked everywhere. The quartic term here makes the safe step size depend on where the iterates are.
+\end{answerbox}
+
+\section{Linear Regression and Regularization (15 points)}
+In class we derived and discussed linear regression in detail. Find the result of minimizing the
+loss of sum of the squared errors after adding in a penalty called an $L_2$ penalty on the weights.
+More formally
+\begin{multiequation}
+\argmin_\wbf \bigg\{ ||\ybf - \xbf \wbf||^2  + \lambda||\wbf||^2  \bigg\}
+\end{multiequation}
+
+which means we are interested in finding $\wbf$ that minimizes the overall expression. How does this change the solution to the original linear regression solution? What is the impact of adding in this penalty?
+
+$|| \cdot ||$ is L2 norm.
+
+\textbf{Hint:} First take the gradient with respect to $\wbf$ and then equate to zero you will obtain an expression for $\wbf$ which is the estimated $\hat{\wbf}$.
+
+Also, remember in vector form the L2 norm $||v||$ can be written as $\vbf^\top \vbf$.
+
+
+\begin{answerbox}
+$$
+\argmin_\textbf{w} \bigg\{ ||\textbf{y} - \textbf{x} \textbf{w}||^2  + \lambda||\textbf{w}||^2  \bigg\}
+$$
+
+$$
+\cfrac{d}{d\textbf{w}}\Bigg\{   \cfrac{1}{2}(\textbf{y} - \textbf{x}\textbf{w})^\top(\textbf{y} - \textbf{x}\textbf{w})  + \cfrac{\lambda}{2}\textbf{w}^\top \textbf{w}\Bigg\} = - \textbf{x}^\top (\textbf{y} -\textbf{x}\textbf{w}) + \lambda \textbf{w} = 0
+$$
+
+\begin{align*}
+- \textbf{x}^\top (\textbf{y} -\textbf{x}\textbf{w}) + \lambda \textbf{I}\textbf{w} = 0\\
+(\textbf{x}^\top\textbf{x} + \lambda\textbf{I})\textbf{w} = \textbf{x}^\top \textbf{y}\\
+\textbf{w} = (\textbf{x}^\top\textbf{x} + \lambda \textbf{I})^{-1} \textbf{x}^\top \textbf{y}
+\end{align*}
+
+The original solution (without regularization) is $\textbf{w} = (\textbf{x}^\top\textbf{x})^{-1} \textbf{x}^\top \textbf{y}$. Compared to this, with regularization, an extra term is $ \lambda \textbf{I}$. The impact of adding penalty is that it penalizes any data points far from the regressed line, so that the slope of the line is not affected too much, and tends to be less steep. This results in model preventing from overfitting.
+\end{answerbox}
+
+
+\section{Assumptions in Linear Regression (5 Points)}
+
+Write all the assumptions while considering simple linear regression model.
+
+\begin{answerbox}
+For the simple linear regression model:
+\begin{align*}
+Y = \beta_0 + \beta_1 X + \varepsilon
+\end{align*}
+where $Y$ is the dependent variable, $X$ is the independent variable, $\beta_0$ and $\beta_1$ are parameters, and $\varepsilon$ is the error term.
+
+\begin{enumerate}
+    \item \textbf{Linearity}: The relationship between $X$ and $Y$ is linear:
+    \begin{align*}
+    E(Y|X) = \beta_0 + \beta_1 X
+    \end{align*}
+    
+    \item \textbf{Independence}: Observations $(X_i, Y_i)$ are independently distributed.
+    
+    \item \textbf{Homoscedasticity}: Constant variance of errors:
+    \begin{align*}
+    \text{Var}(\varepsilon_i|X_i) = \sigma^2 \quad \text{for all } i
+    \end{align*}
+    
+    \item \textbf{Normality}: The error terms are normally distributed:
+    \begin{align*}
+    \varepsilon_i \sim N(0, \sigma^2)
+    \end{align*}
+    
+    \item \textbf{No perfect multicollinearity}: In simple linear regression, this means $X$ is not constant (there is variation in $X$ values).
+    
+    \item \textbf{Exogeneity}: The error term has zero conditional mean:
+    \begin{align*}
+    E(\varepsilon_i|X_i) = 0
+    \end{align*}
+    
+    \item \textbf{Random sampling}: The sample is randomly drawn from the population.
+    
+    \item \textbf{No autocorrelation}: Error terms are uncorrelated with each other:
+    \begin{align*}
+    \text{Cov}(\varepsilon_i, \varepsilon_j) = 0 \quad \text{for } i \neq j
+    \end{align*}
+    
+    \item \textbf{No measurement error}: $X$ is measured without error (or with negligible error).
+\end{enumerate}
+
+\end{answerbox}
+
+\bigskip
+
+\bigskip
+
+{{\LARGE \textbf{Practice}}}
+
+Note that you don't need to use Google Colab for submission.
+
+\section{Computing Derivative  using PyTorch Autograd (5 Points)}
+
+Consider a following function
+\begin{multiequation}
+  \tau  = 2 r \cdot \sqrt{\cfrac{r}{r_s}} \cdot \sqrt{1 - \cfrac{r_s}{r}}
+\end{multiequation}
+
+which is the time experienced by an observer traveling along a specific trajectory in curved spacetime. $r$ is  the radial coordinate in a spherical coordinate system and $r_s$ is the Schwarzschild radius.
+
+Write a program in PyTorch to compute the derivative $\cfrac{d\tau}{dr}$ considering the value of $r = 30000.1$  for $r_s = 0.00887$.
+  
+\section{Linear Regression in One Variable with Scikit-Learn (35 Points)}
+
+
+Consider the dataset \url{https://github.com/rahulbhadani/Datasets/blob/master/RAV4/2020-04-15-05-12-00_2T3Y1RFV8KC014025_CAN_Messages_5_Hz.csv} that contains various driving features from a test driving.
+
+In your Google Colab notebook, use Scikit-learn to create a linear regression model with steer angle as independent  variable and yaw rate as response variable. You need to split the dataset into training and test with 25\% of the rows set aside as a test data. Report the estimated coefficients of the fitted linear model and $R^2$ computed using the test data.
+
+
+
+\section{Linear Regression in One Variable with PyTorch (35 Points)}
+
+Consider the dataset \url{https://github.com/rahulbhadani/Datasets/blob/master/Hydropower.csv}. The main task as a part of this assignment is to create a linear model $y  = w_0 + w_1 x$ and determine the suitable parameter $w_0$ and $w_1$.  For this consider the independent variable $x$ as Benefit-Cost-Ratio (BCR) from the given dataset and the response variable $y$ as AnnualProduction. Using the linear model, we should be able to predict Annual Production given a new BCR.
+
+
+
+You need to write LinearRegression class based on gradient descent implemented using PyTorch as a part of your Python package with the following specification:
+
+\begin{enumerate}
+
+\item Create a subpackage \textbf{model} in your UV Python package. \hfill \textbf{(2 Points)}
+
+\item The subpackage should contain a module \texttt{regression.py}. \hfill \textbf{(2 Points)}
+
+\item Add a \texttt{LinearRegression} class to the module with the following requirement:
+
+\begin{enumerate}
+
+\item \texttt{\_\_init\_\_} function, which is a constructor should  take following parameters as argument: (i) learning rate, and (ii) number of epochs. Further, \texttt{\_\_init\_\_} should initialize $w_0$ and $w_1$, SGD optimizer, and mean-squared error as a loss function, and list or vector to store intermediate $w_0$, $w_1$, and loss as the training progresses. \hfill \textbf{(5 Points)}
+
+\item \texttt{forward} function should specify the linear model and compute the response $y$ and return it. \hfill \textbf{(2 Points)}
+
+\item \texttt{fit} function should perform machine learning on training dataset provided to the function as an argument. fit function also should take test data as an additional argument and after training, it should compute $R^2$ on the test data and print it. \hfill \textbf{(5 Points)}
+
+\item \texttt{predict} function should predict AnnualProduction given a new BCR data.  \textbf{(4 Points)}
+
+\item \texttt{analysis\_plot} function should create several plots on the same figure using subplots such as original data, fitted regression line, nd $w_0$ , $w_1$ and loss as the training progressed. \hfill \textbf{(5 Points)}
+
+
+
+\end{enumerate}
+
+
+\item Add appropriate entry to \texttt{\_\_init\_\_.py} at subpackage level and at package level to facilitate proper import. \hfill \textbf{(2 Points)}
+
+\item Build your package after incrementing version number, commit to GitHub, and publish to PYPI. \hfill \textbf{(3 Points)}
+
+\item Show the complete usage of your LinearRegression model with \texttt{Hydropower.csv} dataset through a standalone notebook that first installs your package. \hfill \textbf{(5 Points)}
+\end{enumerate}
+
+\end{document}

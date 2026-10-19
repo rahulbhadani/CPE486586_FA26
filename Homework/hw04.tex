@@ -1,0 +1,271 @@
+\documentclass[12pt, xcolor=dvipsnames,svgnames,x11names]{article}
+
+\input{common}
+
+\renewcommand{\familydefault}{\rmdefault}   % Palatino (loaded in common.tex)
+
+
+% Redefine \maketitle to include tcolorbox
+% Palette: hdrplum (2E0014), hdrcoral (E17564), hdrslate (2F4F4F)
+\makeatletter
+\newcommand{\hdrrule}{{\color{hdrcoral}\rule{4.5em}{1.1pt}}}
+\renewcommand{\maketitle}{%
+      \begin{center}
+         \begin{tcolorbox}[
+               enhanced,
+               colback=white,
+               colframe=hdrslate,
+               boxrule=0.8pt,
+               arc=4pt,
+               left=0pt,
+               right=0pt,
+               top=0pt,
+               bottom=0pt,
+               drop shadow={hdrslate!35!white},
+         ]
+               % Header band: deep plum with a coral baseline
+               \begin{tcolorbox}[
+                  enhanced,
+                  colback=hdrplum,
+                  colframe=hdrplum,
+                  boxrule=0pt,
+                  arc=4pt,
+                  sharp corners=south,
+                  left=2em,
+                  right=2em,
+                  top=1.1em,
+                  bottom=1.1em,
+                  borderline south={2.2pt}{0pt}{hdrcoral},
+               ]
+                  \centering
+                  % Palatino has no bold small caps, so the title stays at medium
+                  % weight and gains presence from size and the dark band instead.
+                  {\LARGE\color{white}\linespread{1.25}\selectfont\@title}
+               \end{tcolorbox}
+
+               % Body: author, coral divider, then the due information
+               \vspace{1.1em}
+               \centering
+               {\large\color{hdrslate}\@author}\\[0.7em]
+               \hdrrule\\[0.7em]
+               {\normalsize\color{hdrplum}\@date}
+               \vspace{1.1em}
+         \end{tcolorbox}
+      \end{center}
+      \vspace{1.5em}
+}
+\makeatother
+
+
+
+
+\newcommand{\hw}{Homework 4:\\\normalsize Advanced Regression and Logistics Regression}
+\newcommand{\duedate}{October 30, 2026, 11:59 PM}
+
+\newenvironment{multiequation}[1][]{%
+\begin{equation}%
+   \begin{aligned}%
+   \ifx#1\@empty\else\label{#1}\fi%
+}{%
+   \end{aligned}%
+\end{equation}%
+}
+\pagestyle{fancy}
+
+\lhead{\footnotesize{\coursenumber, \courseterm}, \footnotesize{UAH}}
+\chead{}
+\rhead{\footnotesize{\emph{\hw}}}
+\lfoot{\footnotesize{\instructorname}}
+\cfoot{\footnotesize{\thepage}}
+\rfoot{\footnotesize{\textit{Last Revised:~\today}}}
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+\newcommand{\minipagewidth}{0.8\columnwidth}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+
+
+
+\begin{document}
+
+
+\title{\textsc{\hw\\
+\coursenumber}}
+\author{Instructor: \instructorname}
+\date{Due: \duedate\\ 125 Points}
+
+\maketitle
+
+\setlength{\unitlength}{1in}
+You are allowed to use a generative model-based AI tool for your assignment. However, you must submit an accompanying reflection report detailing how you used the AI tool, the specific query you made, and how it improved your understanding of the subject. You are also required to submit screenshots of your conversation with any large language model (LLM) or equivalent conversational AI, clearly showing the prompts and your login avatar. Some conversational AIs provide a way to share a conversation link, and such a link is desirable for authenticity. Failure to do so may result in actions taken in compliance with the plagiarism policy.
+
+Additionally, you must include your thoughts on how you would approach the assignment if such a tool were not available. Failure to provide a reflection report for every assignment where an AI tool is used may result in a penalty, and subsequent actions will be taken in line with the plagiarism policy.
+
+\subsection*{Submission instruction:}
+You may either complete your entire homework on Python Notebook  and submit a Google Colab link or you may choose a combination of a pdf and Google Colab Notebook. However, you must provide \textbf{publicly accessible} Google Colab URL on Canvas.
+
+For .pdf on Canvas, follow the format  \texttt{CPE486586-LastFirst-HW-XX}. For example, if your name is Sam Wells, your file name should be \texttt{CPE486586-WellsSam-HW-XX.pdf}.
+
+Your submission must contain your name and UAH Charger ID or your UAH email address.  Please number your pages as well.
+
+\textbf{Please write down your unique keyword corresponding to your package and your Github account URL. Do not provide a link to your Google Colab notebook. Upload your Google colab notebook to your repo in a new folder called \textbf{HWNotebooks}. Provide your GitHub commit hash. Your submitted notebook must be fully executed with all cells outputs. Please make sure there are no error in your submitted notebook.}
+
+\vskip 1em
+\hrule
+\vskip 1em
+
+
+% {\LARGE \color{stormblue} \textbf{Python Practice-I}}
+
+
+{{\LARGE \textbf{Theory}}}
+
+
+\section{Locally-weighted Regression (10 Points)}
+
+
+
+
+Let the training set be denoted by 
+
+$
+\{ ( \xbf^{(1)}, y^{(1)}), \cdots,  ( \xbf^{(N)}, y^{(N)}) \}
+$. Cosnider positive weights $a^{(1)}, \cdots, a^{(N)}$. We define the weighted least squares problem as follows:
+
+
+\begin{multiequation}
+\hat{\wbf} = \argmin \cfrac{1}{2} \sum_{i = 1}^N a^{(i)} \bigg( y^{(i)} - \wbf^\top \xbf^{(i)} \bigg)^2 + \cfrac{\lambda}{2} || \wbf || ^2
+\end{multiequation}
+
+Show that the closed-form solution to the weighted least squares problem is given by the
+formula below.
+
+\begin{multiequation}
+    \hat{\wbf} = ( \Xbf^\top \Abf \Xbf + \lambda \Ibf)^{-1}\Xbf^\top \Abf \ybf
+\end{multiequation}
+
+where $\Xbf$ is $N \times D$ design matrix ($N$ samples, $D$ features), $\Abf$ is a diagonal matrix where $\Abf_{ii} = a^{(i)}$.
+
+In this case, we define the loss function is defined to be the total loss (not the average loss) over all the training examples.
+
+\section{Logistics Regression by Hand (20 Points)}
+
+The following dataset consists of 4 training examples, where $x_k^{(i)}$ denotes the $k$-th dimension of the $i$-th training example $\xbf^{(i)}$, and $y^{(i)}$ is the corresponding label ($k \in \{1, 2, 3\}$ and $i \in \{1, 2, 3, 4\}$).
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+$i$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $y$ \\ \hline
+1   & 0       &       0 &       1 & 0   \\ \hline
+2   & 0       &       1 &       0 & 1   \\ \hline
+3   & 0       &       1 &       1 & 1   \\ \hline
+4   & 1       &       0 &       0 & 0   \\ \hline
+
+\end{tabular}
+\end{center}
+
+A binary logistic regression model is trained on this dataset, and the parameter vector $\boldsymbol{\theta}$ after training is
+
+$$\boldsymbol{\theta} = \begin{bmatrix}1.5 & 2 & 1\end{bmatrix}^T.$$
+
+\textit{Note}: There is \textbf{no intercept term} used in this problem.
+
+Use the data above to answer the following questions. For all numerical answers, please use one number rounded to the fourth decimal place; e.g., 0.1234. Showing your work in these questions is optional, but it is recommended to help us understand where any misconceptions may occur.
+
+\begin{enumerate}
+    \item  Calculate  $J(\boldsymbol{\theta}$), $\frac{1}{N}$ times the negative log-likelihood over the given data and parameter $\boldsymbol{\theta}$. (Note here we are using natural log, i.e., the base is $e$). Use 
+    
+$$
+J(\boldsymbol{\theta}) = -\frac{1}{N} \sum_{i=1}^N \left[ y^{(i)} \log(h_{\boldsymbol{\theta}}(\mathbf{x}^{(i)})) + (1 - y^{(i)}) \log(1 - h_{\boldsymbol{\theta}}(\mathbf{x}^{(i)})) \right].
+$$
+    
+    Get the expression for $h_{\boldsymbol{\theta}}$ from your lecture notes.
+
+    \item Calculate the gradients $\cfrac{\partial J(\boldsymbol{\theta})}{\partial \theta_j}$ with respect to $\theta_{j}$ for all $j \in \{1, 2, 3\}$.
+
+    \item Update the parameters following the parameter update step $\theta_j \leftarrow \theta_j - \eta \frac{\partial J(\boldsymbol{\theta})}{\partial \theta_j}$ and write the updated (numerical) value of the vector $\boldsymbol{\theta}$. Use learning rate $\eta = 1$.
+\end{enumerate}
+
+\section{How is Logistics Regression different from Polynomial Regression? (5 Points)}
+
+\section{Assumptions and Diagnostics in Linear Regression (15 Points)}
+
+\begin{enumerate}
+\item How will you detect the violation of homoscedasticity assumption in the Linear regression model? \hfill \textbf{(5 Points)}
+
+\item How will you detect the violation of Normality of Errors assumtions in the Linear regression model? \hfill \textbf{(5 Points)}
+
+\item In case of multiple regression, how will you detect multicollinearity? \hfill \textbf{(5 Points)}
+
+\item \textbf{Bonus:} What kind of statistical test you will use to determine that errors are dependent in linear regression model? Provide mathematical framework with explanation. \hfill \textbf{(5 Points)}
+
+\item \textbf{Bonus:} What kind of statistical test you will use to determine if errors are non-normal in linear regression model? Provide mathematical framework with explanation. \hfill \textbf{(5 Points)}
+
+\end{enumerate}
+
+{{\LARGE \textbf{Practice}}}
+
+\section{Multiple Regression (35 Points)}
+
+We will build a multiple linear regression model for predicting the net hourly electrical energy output (PE) in MegaWatt. Downlaod the dataset from \url{https://github.com/rahulbhadani/Datasets/tree/master/CombinedCyclePowerPlant}. The dataset contains following features:
+
+\begin{itemize}
+    \item $\xbf_1$: Ambient Temperature (AT) in °C, 
+    \item $\xbf_2$: Exhaust Vacuum (V) in cm Hg 
+    \item $\xbf_3$: Ambient Pressure (AP) in milibar
+    \item $\xbf_4$: Relative Humidity (RH) in percent
+\end{itemize}
+
+Perform the following task and answer the following questions. You must create a class called CauchyRegression as a part of the implementation.
+
+\vspace{10pt}
+
+\textbf{BONUS:} Add the CauchyRegression class you will create as a part of this assignment to the module subpackage \textbf{model}  module \texttt{regression.py} that you created in your Homework 3 Assignment. In your notebook, you must also show its uses by importing your module appropriately. \hfill \textbf{(20 Points)} 
+
+Your CauchyRegression class should contain appropriate member functions and member variables to accomplish the following. You must also implement that using \textbf{PyTorch.}
+
+\begin{enumerate}
+    \item Provide a scatterplot matrix figure that shows correlation among features as well as features and the target variable. \hfill \textbf{(5 Points)}
+    \item We are interested in creating a multiple linear regression model 
+    $$
+        y = w_0 + w_1 x_1 + w_2 x_2 + w_3 x_3 + w_4 x_4
+    $$
+    Perform multiple linear regression using above model. 
+    However, for this purpose use the Cauchy Loss function:
+
+    \begin{multiequation}
+        \ell(\hat{y}, y) = \cfrac{c^2}{2} \log \bigg( 1 + \bigg( \cfrac{y-\yhat}{c}\bigg)^2 \bigg)
+    \end{multiequation}
+
+    where $c$ is the Cauchy loss function constant. In this question, we will use $c = 1$. Use appropriate values for learning rate and number of epochs.
+
+    \hfill \textbf{(10 Points)}
+
+    \item What are the coefficient values for the fitted model?  \textbf{(5 Points)}
+    \item What's the final loss value?  \textbf{(5 Points)}
+    \item What does the 95\% confidence interval for the coefficients tell you?  \textbf{(5 Points)}
+    \item Create the residual plot $\yhat - y$  against $x_1$, $x_2$, $x_3$, and $x_4$. What do you conclude?  \textbf{(5 Points)}
+    \item \textbf{BONUS:} Provide the alternative implementation using statsmodels package. For this implementation, you will need to import GenericLikelihoodModel using the command \texttt{from statsmodels.base.model import GenericLikelihoodModel} and write a new class \texttt{CauchyModel} by inheriting from the base class \texttt{GenericLikelihoodModel}. An example implementation can found in its documentation \url{https://www.statsmodels.org/dev/examples/notebooks/generated/generic_mle.html}. \hfill      \textbf{(20 Points)}
+\end{enumerate}
+
+
+\section{Logistics Regression \textbf{(30 Points)}}
+
+Write your own implementation of logistic regression and implement your model on \textbf{real-world dataset}. You should either supply your dataset with the submission or provide detailed description of how to download those dataset. You may also provide a publicly available Google Drive link to dowload your dataset. Make sure the dataset is not larger than 1 GB. However, dataset must contain at least 5000 samples and 3 features. A use of synthetic dataset is not allowed as a part of this submission.
+
+Provide the description and meaning of each feature and label  in your dataset as well and also provide a discussion of what you are looking to classify using the Logistics Regression model.
+
+If you simply use Scikit-learn’s implementation of the logistic regression classifier then you’ll
+receive a maximum of 20 out of 30 points. A full 30/30 will be awarded to those that actually implement logistic regression using the optimization of cross-entropy using stochastic gradient descent, preferably implemented in PyTorch. You must also provide sufficient metrics for assessment of your trained Logistics Regression Model on test dataset. You must also check if there is class imbalance in your dataset.
+
+\textbf{BONUS:} Add your Logistics Regressions model to a module \texttt{logit.py} in your package implementation and show its usage in your notebook.  \textbf{(10 Points)}
+
+
+\end{document}
