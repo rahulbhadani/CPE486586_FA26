@@ -230,6 +230,23 @@ Assume that all data points satisfy the constraints:
 
 \end{frame}
 
+\begin{frame}{Why $\pm 1$? The Canonical Hyperplane}
+    Scaling $(\wbf, b)$ by a constant $c > 0$ leaves the hyperplane $\wbf^\top \xbf + b = 0$ unchanged.
+
+    \vspace{10pt}
+
+    We remove this freedom by fixing the scale so that the closest points satisfy
+    \begin{multiequation}
+        \min_{i} \; y_i(\wbf^\top \xbf_i + b) = 1
+    \end{multiequation}
+
+    The training points then satisfy $y_i(\wbf^\top \xbf_i + b) \geq 1$, and the closest points of the two classes lie on $\wbf^\top \xbf + b = +1$ and $\wbf^\top \xbf + b = -1$.
+
+    \vspace{10pt}
+
+    The two bullet constraints on the previous slide collapse into the single constraint $y_i(\wbf^\top \xbf_i + b) \geq 1$.
+\end{frame}
+
 
 \begin{frame}{The SVM and Linear Classification}
     \begin{center}
@@ -352,6 +369,21 @@ Assume that all data points satisfy the constraints:
 
 
     
+\end{frame}
+
+
+\begin{frame}{Solving the Projection with a Lagrange Multiplier}
+    \begin{multiequation}
+        \Lcal(\xbf, \lambda) & = \frac{1}{2}\|\xbf - \xbf_0\|^2 + \lambda(\wbf^\top \xbf - \beta)\\
+        \frac{\partial \Lcal}{\partial \xbf} & = \xbf - \xbf_0 + \lambda \wbf = 0 \;\Rightarrow\; \xbf = \xbf_0 - \lambda \wbf\\
+        \wbf^\top(\xbf_0 - \lambda\wbf) & = \beta \;\Rightarrow\; \lambda = \frac{\wbf^\top\xbf_0 - \beta}{\|\wbf\|^2}\\
+        \xbf^* & = \xbf_0 + (\beta - \wbf^\top\xbf_0)\frac{\wbf}{\|\wbf\|^2}
+    \end{multiequation}
+    The distance from $\xbf_0$ to the hyperplane is
+    \begin{multiequation}
+        \|\xbf^* - \xbf_0\| = \frac{|\wbf^\top\xbf_0 - \beta|}{\|\wbf\|}
+    \end{multiequation}
+    With $\beta = -b$, this is $r = |g(\xbf_0)|/\|\wbf\|$, the distance $r$ in the SVM figure.
 \end{frame}
 
 \begin{frame}{Distance between two Hyperplanes}
@@ -477,6 +509,17 @@ Both $||\wbf||$ and $\cfrac{||\wbf||^2}{2}$ are convex, and they share the same 
 \end{frame}
 
 
+\begin{frame}{From the Primal to the Dual Problem}
+    \begin{itemize}
+        \item \textbf{Primal:} $\displaystyle \min_{\wbf, b} \; \max_{\alpha \geq 0} \; \Lcal(\wbf, b, \alpha)$.
+        The inner maximum is $+\infty$ when a constraint is violated and $\frac{1}{2}\|\wbf\|^2$ otherwise, so this is the original problem.
+        \item<2-> \textbf{Dual:} swap the order, $\displaystyle \max_{\alpha \geq 0} \; \min_{\wbf, b} \; \Lcal(\wbf, b, \alpha)$.
+        The inner minimum is what we compute next, from $\partial\Lcal/\partial\wbf = 0$ and $\partial\Lcal/\partial b = 0$.
+        \item<3-> \textbf{Weak duality:} dual optimum $\leq$ primal optimum.
+        \item<4-> \textbf{Strong duality:} the SVM primal is a convex QP with affine constraints, so the two optima are equal when the data are separable. Solving the dual for $\alpha^*$ therefore gives the primal solution $\wbf^*$.
+    \end{itemize}
+\end{frame}
+
 %------------------------------------------------
 \begin{frame}{Deriving the Support Vector Machine}
     \begin{tblock}{}
@@ -548,7 +591,80 @@ Both $||\wbf||$ and $\cfrac{||\wbf||^2}{2}$ are convex, and they share the same 
     \end{frame}
     
     
-    
+    \begin{frame}{Support Vectors from the KKT Conditions}
+    Complementary slackness for the SVM constraints gives
+    \begin{multiequation}
+        \alpha_i^* \left[ y_i(\wbf^{*\top}\xbf_i + b^*) - 1 \right] = 0, \quad i = 1, \dots, n
+    \end{multiequation}
+    \begin{itemize}
+        \item If $y_i(\wbf^{*\top}\xbf_i + b^*) > 1$, the point lies beyond the margin, so $\alpha_i^* = 0$.
+        \item<2-> If $\alpha_i^* > 0$, then $y_i(\wbf^{*\top}\xbf_i + b^*) = 1$, and the point lies on the margin. These points are the {\color{MediumRed}\textbf{support vectors}}.
+    \end{itemize}
+    \uncover<3->{
+    Since $\wbf^* = \sum_i \alpha_i^* y_i \xbf_i$, only the support vectors determine the hyperplane. Removing a non-support vector from the training set leaves the solution unchanged.
+    }
+\end{frame}
+
+
+
+%------------------------------------------------
+\begin{frame}{Recovering $b$ and Classifying a New Point}
+    Pick a support vector $\xbf_s$ with $\alpha_s^* > 0$. From $y_s(\wbf^{*\top}\xbf_s + b^*) = 1$ and $y_s^2 = 1$:
+    \begin{multiequation}
+        b^* = y_s - \sum_{i \in \mathcal{S}} \alpha_i^* y_i \, \kappa(\xbf_i, \xbf_s)
+    \end{multiequation}
+    where $\mathcal{S}$ is the set of support vectors. In practice, average $b^*$ over the support vectors for numerical stability (for the soft margin, use those with $0 < \alpha_s^* < C$).
+
+    \vspace{8pt}
+
+    \textbf{Decision rule} for a new point $\xbf$:
+    \begin{multiequation}
+        \hat{y} = \operatorname{sign}\left( \sum_{i \in \mathcal{S}} \alpha_i^* y_i \, \kappa(\xbf_i, \xbf) + b^* \right)
+    \end{multiequation}
+    Prediction cost grows with the number of support vectors $|\mathcal{S}|$, which is usually much smaller than $n$.
+\end{frame}
+
+
+%------------------------------------------------
+% Worked example. Verified with sklearn SVC(kernel='linear', C=1e8):
+% coef_ = [1, 0], intercept_ = -1, dual_coef_ = [-0.5, 0.5], support_ = [2, 1].
+%------------------------------------------------
+\begin{frame}{Worked Example: Hard Margin SVM by Hand}
+    \begin{columns}
+    \column{0.40\linewidth}
+    Data:
+    \begin{itemize}
+        \item $\xbf_1 = (3, 2)$, \; $y_1 = +1$
+        \item $\xbf_2 = (2, 0)$, \; $y_2 = +1$
+        \item $\xbf_3 = (0, 0)$, \; $y_3 = -1$
+    \end{itemize}
+
+    \vspace{6pt}
+
+    Guess from a sketch: $\xbf_2$ and $\xbf_3$ are the support vectors, so $\alpha_1 = 0$.
+
+    \vspace{6pt}
+
+    $\sum_i \alpha_i y_i = 0 \;\Rightarrow\; \alpha_2 = \alpha_3 = \alpha$.
+
+    \column{0.56\linewidth}
+    \uncover<2->{
+    \begin{multiequation}
+        \Lcal(\alpha) & = 2\alpha - \frac{1}{2}\alpha^2 \, \|\xbf_2 - \xbf_3\|^2 = 2\alpha - 2\alpha^2\\
+        \frac{d\Lcal}{d\alpha} & = 2 - 4\alpha = 0 \;\Rightarrow\; \alpha = \tfrac{1}{2}\\
+        \wbf^* & = \tfrac{1}{2}\xbf_2 - \tfrac{1}{2}\xbf_3 = (1, 0)\\
+        b^* & = y_2 - \wbf^{*\top}\xbf_2 = 1 - 2 = -1
+    \end{multiequation}
+    }
+    \uncover<3->{
+    Boundary: the vertical line through $(1, 0)$. Margin: $2/\|\wbf^*\| = 2$.
+
+    \vspace{4pt}
+
+    Check $\xbf_1$: $y_1(\wbf^{*\top}\xbf_1 + b^*) = 2 > 1$, so $\alpha_1 = 0$ agrees with the KKT conditions.
+    }
+    \end{columns}
+\end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -710,6 +826,30 @@ value computed in the vector space of the data. Recall the dot product
 \end{frame}
 
 
+\begin{frame}{Cover's Theorem}
+    \begin{tblock}{Cover (1965)}
+    A pattern classification problem cast nonlinearly into a high-dimensional space is more likely to be linearly separable than in a low-dimensional space.
+    \end{tblock}
+    \begin{itemize}
+        \item For $n$ points in general position in $\mathbb{R}^d$, the fraction of the $2^n$ labelings that a hyperplane can separate is
+        \begin{multiequation}
+            P(n, d) = \frac{1}{2^{n-1}} \sum_{m=0}^{d} \binom{n-1}{m}
+        \end{multiequation}
+        \item $P(n, d) = 1$ when $n \leq d + 1$. Example: $P(4, 2) = 7/8$, since XOR cannot be separated in $\mathbb{R}^2$.
+        \item Raising $d$ through $\Phi$ raises the chance of separability. The kernel trick gives us that space without computing $\Phi$.
+    \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Which Functions Are Valid Kernels?}
+    \begin{itemize}
+        \item $\kappa$ is a valid kernel when a feature map $\Phi$ exists with $\kappa(\xbf, \xbf') = \Phi(\xbf)^\T\Phi(\xbf')$.
+        \item<2-> \textbf{Mercer's condition:} $\kappa$ is symmetric, and the Gram matrix $K_{ij} = \kappa(\xbf_i, \xbf_j)$ is positive semidefinite for any finite set of points.
+        \item<3-> A PSD Gram matrix keeps the dual a convex QP, so the solver reaches the global optimum.
+        \item<4-> Linear, polynomial ($c \geq 0$), and Gaussian kernels satisfy Mercer's condition. The $\tanh$ kernel fails it for some $(\gamma, c)$, so its Gram matrix can have negative eigenvalues.
+        \item<5-> Sums and products of valid kernels are valid kernels.
+    \end{itemize}
+\end{frame}
 
 
 %------------------------------------------------
@@ -754,6 +894,8 @@ value computed in the vector space of the data. Recall the dot product
 y_i (\wbf^\top \xbf_i  + b) \geq 1 - \xi_i
     $$
 \end{frame}
+
+
 
 \begin{frame}{Soft Margin Optimization Problem}
 
@@ -897,6 +1039,123 @@ y_i (\wbf^\top \xbf_i  + b) \geq 1 - \xi_i
     
         
 \end{frame}
+
+
+\begin{frame}{Interpreting $\alpha_i$ and $\xi_i$ in the Soft Margin SVM}
+    KKT conditions: $\alpha_i\left[y_i f(\xbf_i) - 1 + \xi_i\right] = 0$ and $\mu_i \xi_i = (C - \alpha_i)\,\xi_i = 0$, with $f(\xbf) = \wbf^\T\xbf + b$.
+
+    \vspace{10pt}
+
+    \begin{center}
+    \begin{tabular}{lll}
+        \toprule
+        $\alpha_i$ & Condition & Location of $\xbf_i$ \\
+        \midrule
+        $\alpha_i = 0$ & $y_i f(\xbf_i) \geq 1$, \; $\xi_i = 0$ & correct side, on or beyond the margin \\
+        $0 < \alpha_i < C$ & $y_i f(\xbf_i) = 1$, \; $\xi_i = 0$ & exactly on the margin \\
+        $\alpha_i = C$ & $y_i f(\xbf_i) = 1 - \xi_i$ & inside the margin ($0 < \xi_i \leq 1$) \\
+         & & or misclassified ($\xi_i > 1$) \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+
+    \vspace{6pt}
+
+    Support vectors are the points with $\alpha_i > 0$ (rows 2 and 3).
+\end{frame}
+
+
+%------------------------------------------------
+% Connects to LinearSVC(loss="hinge") in the notebook and to logistic regression.
+%------------------------------------------------
+\begin{frame}{Soft Margin SVM as Hinge Loss Minimization}
+    At the optimum, $\xi_i = \max\left(0,\, 1 - y_i(\wbf^\T\xbf_i + b)\right)$. Substituting into the primal:
+    \begin{multiequation}
+        \min_{\wbf, b} \; \frac{1}{2}\|\wbf\|^2 + C \sum_{i=1}^{n} \underbrace{\max\left(0,\, 1 - y_i(\wbf^\T\xbf_i + b)\right)}_{\text{hinge loss}}
+    \end{multiequation}
+    \begin{columns}
+    \column{0.52\linewidth}
+    \begin{itemize}
+        \item Regularized loss minimization, the same template as regularized logistic regression with loss $\log(1 + e^{-y f(\xbf)})$.
+        \item Hinge loss is exactly zero for $y f(\xbf) \geq 1$, which is why many $\alpha_i$ are zero.
+        \item \texttt{LinearSVC(loss="hinge")} in the notebook solves this problem (it also regularizes $b$).
+    \end{itemize}
+    \column{0.44\linewidth}
+    \begin{tikzpicture}
+    \begin{axis}[width=\linewidth, height=0.8\linewidth, xlabel={$y f(\xbf)$}, ylabel={loss},
+                 domain=-2:3, samples=120, ymin=0, ymax=3.2, axis lines=left,
+                 legend style={font=\tiny, draw=none}, tick label style={font=\tiny}, label style={font=\small}]
+        \addplot[thick, red] {max(0, 1-x)};
+        \addlegendentry{hinge}
+        \addplot[thick, blue, dashed] {ln(1+exp(-x))/ln(2)};
+        \addlegendentry{logistic (scaled)}
+        \addplot[thick, black, dotted] coordinates {(-2,1) (0,1) (0,0) (3,0)};
+        \addlegendentry{0-1}
+    \end{axis}
+    \end{tikzpicture}
+    \end{columns}
+\end{frame}
+
+
+%------------------------------------------------
+% Figures from ch12_new_figures.py
+%------------------------------------------------
+\begin{frame}{Effect of $C$ (Linear Kernel)}
+    \begin{center}
+    \includegraphics[width=0.95\textwidth]{figures/svm_C_effect.pdf}
+    \end{center}
+    Small $C$ tolerates violations: wide margin, many support vectors. Large $C$ punishes them: narrow margin, close to the hard margin solution.
+\end{frame}
+
+
+%------------------------------------------------
+\begin{frame}{Effect of $\gamma$ (RBF Kernel)}
+    \begin{center}
+    \includegraphics[width=0.95\textwidth]{figures/svm_gamma_effect.pdf}
+    \end{center}
+    $\gamma$ sets how far the influence of a training point reaches in $\kappa(\xbf, \xbf') = e^{-\gamma\|\xbf - \xbf'\|^2}$. Small $\gamma$ underfits. Large $\gamma$ wraps the boundary around single points: training accuracy rises while test accuracy falls. Tune $C$ and $\gamma$ together with cross-validation.
+\end{frame}
+
+
+%------------------------------------------------
+% The notebook classifies 6 modulation types, but the slides never cover multi-class.
+%------------------------------------------------
+\begin{frame}{Multi-class SVM}
+    The SVM is a binary classifier. For $K$ classes:
+    \begin{itemize}
+        \item \textbf{One-vs-Rest (OvR):} train $K$ classifiers, class $k$ against the rest. Predict the class with the largest $f_k(\xbf)$.
+        \item<2-> \textbf{One-vs-One (OvO):} train $K(K-1)/2$ classifiers, one per pair of classes. Predict by majority vote.
+        \item<3-> \texttt{SVC} always trains OvO internally. Its \texttt{decision\_function\_shape} argument only changes the shape of the returned scores. \texttt{LinearSVC} uses OvR.
+    \end{itemize}
+    \uncover<4->{
+    Notebook example: $K = 6$ modulation types gives $15$ pairwise SVMs.
+    }
+\end{frame}
+
+
+%------------------------------------------------
+\begin{frame}{From the Math to \texttt{scikit-learn}}
+    \begin{center}
+    \small
+    \begin{tabular}{ll}
+        \toprule
+        Math & \texttt{SVC} parameter or attribute \\
+        \midrule
+        $C$ & \texttt{C} \\
+        $\gamma$ in RBF, polynomial, $\tanh$ & \texttt{gamma} \\
+        $c$ and $p$ in the polynomial kernel & \texttt{coef0}, \texttt{degree} \\
+        support vectors $\{\xbf_i : \alpha_i > 0\}$ & \texttt{support\_vectors\_}, \texttt{support\_} \\
+        $\alpha_i y_i$ for the support vectors & \texttt{dual\_coef\_} \\
+        $b$ & \texttt{intercept\_} \\
+        $\wbf$ (linear kernel only) & \texttt{coef\_} \\
+        $\sum_i \alpha_i y_i \kappa(\xbf_i, \xbf) + b$ & \texttt{decision\_function(X)} \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+    Kernels depend on distances and dot products, so standardize features first (\texttt{StandardScaler}). Training cost grows roughly as $n^2$ or faster, so use \texttt{LinearSVC} or \texttt{SGDClassifier} for large $n$.
+\end{frame}
+
+
     
     
 \begin{frame}{References}
